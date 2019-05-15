@@ -11,6 +11,9 @@ namespace app\api\controller\v1;
 class Test
 {
     public function test(){
-        return \think\facade\Env::get('runtime_path');
+        /*//$json_file = \think\facade\Env::get('root_path') + '../config/ganglonggou.json';
+        $json_file = dirname(\think\facade\Env::get('root_path')) . '/config/ganglonggou.json';
+        $json_array = json_decode(file_get_contents($json_file),true);*/
+        echo config('my_config.hostname');
     }
 }

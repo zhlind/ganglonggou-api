@@ -19,5 +19,11 @@ return [
 
 ];*/
 
+use think\facade\Route;
 
-\think\facade\Route::get('api/:version/test','api/:version.Test/test');
+/*测试*/
+Route::get('api/:version/test', 'api/:version.Test/test');
+
+/*cms*/
+//登录
+Route::post('api/:version/cms/login', 'api/:version.cms.CmsAdmin/adminLogin');
