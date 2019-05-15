@@ -8,8 +8,8 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-
-Route::get('think', function () {
+//use think\facade\Route;
+/*Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
 
@@ -17,4 +17,7 @@ Route::get('hello/:name', 'index/hello');
 
 return [
 
-];
+];*/
+
+
+\think\facade\Route::get('api/:version/test','api/:version.Test/test');
