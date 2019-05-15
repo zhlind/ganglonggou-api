@@ -17,7 +17,7 @@ return [
     // 驱动方式
     'type'   => 'File',
     // 缓存保存目录
-    'path'   => config('my_config.cache_file'),
+    'path'   => dirname(\think\facade\Env::get('root_path')) . '/runtime/cache/',
     // 缓存前缀
     'prefix' => '',
     // 缓存有效期 0表示永久缓存

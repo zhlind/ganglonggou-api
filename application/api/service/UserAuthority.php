@@ -13,7 +13,7 @@ use app\api\service\Token\Token;
 use app\lib\exception\CommonException;
 use think\facade\Request;
 
-class Authority
+class UserAuthority
 {
     /**
      * @param $code

@@ -11,8 +11,18 @@
 
 // [ 应用入口文件 ]
 namespace think;
-// 定义应用目录
-//define('APP_PATH', __DIR__ . '/../application/');
+
+//跨域请求
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Token");
+header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
+
+//读取配置文件，定义配置常量
+$json_file = dirname(dirname(__DIR__)) . '/config/ganglonggou.json';
+$json_str = file_get_contents($json_file);
+$json_array = json_decode($json_str, true);
+define('_GL_CONFIG_',$json_array);
+
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

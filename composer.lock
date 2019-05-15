@@ -4,8 +4,62 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d08a5d21a191056a9ed5b2808fec679",
+    "content-hash": "60698aeaa9c966b5a77902b93a685201",
     "packages": [
+        {
+            "name": "swiftmailer/swiftmailer",
+            "version": "5.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swiftmailer/swiftmailer.git",
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/181b89f18a90f8925ef805f950d47a7190e9b950",
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.1",
+                "symfony/phpunit-bridge": "~3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.4-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Corbyn"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "https://swiftmailer.symfony.com",
+            "keywords": [
+                "email",
+                "mail",
+                "mailer"
+            ],
+            "time": "2018-07-31T09:26:32+00:00"
+        },
         {
             "name": "topthink/framework",
             "version": "5.1.x-dev",
@@ -97,12 +151,64 @@
                 }
             ],
             "time": "2018-05-11T06:45:42+00:00"
+        },
+        {
+            "name": "yuan1994/tp-mailer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yuan1994/tp-mailer.git",
+                "reference": "7fe9b64d69be67a325a2708368b99edf44d17981"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yuan1994/tp-mailer/zipball/7fe9b64d69be67a325a2708368b99edf44d17981",
+                "reference": "7fe9b64d69be67a325a2708368b99edf44d17981",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "swiftmailer/swiftmailer": "^5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mailer\\": "src/mailer"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yuan1994",
+                    "email": "tianpian0805@gmail.com",
+                    "homepage": "https://github.com/yuan1994/tp-mailer/",
+                    "role": "Owner"
+                }
+            ],
+            "description": "A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Frameworks based SwiftMailer",
+            "homepage": "https://github.com/yuan1994/tp-mailer/",
+            "keywords": [
+                "mail",
+                "mailer",
+                "phpmailer",
+                "swiftmailer",
+                "thinkphp",
+                "tp",
+                "tp-mailer",
+                "tp5-mailer"
+            ],
+            "time": "2016-12-10T11:54:45+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "yuan1994/tp-mailer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
