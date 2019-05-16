@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60698aeaa9c966b5a77902b93a685201",
+    "content-hash": "f70296d5ca411d8ea2e9c6ee37b19939",
     "packages": [
         {
             "name": "swiftmailer/swiftmailer",
@@ -112,6 +112,46 @@
             "time": "2019-05-10T08:06:39+00:00"
         },
         {
+            "name": "topthink/think-image",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-image.git",
+                "reference": "87c2946a0e0f45cc438462415ced38a0799847ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-image/zipball/87c2946a0e0f45cc438462415ced38a0799847ef",
+                "reference": "87c2946a0e0f45cc438462415ced38a0799847ef",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.*",
+                "topthink/framework": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "think\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "The ThinkPHP5 Image Package",
+            "time": "2017-12-18T03:09:47+00:00"
+        },
+        {
             "name": "topthink/think-installer",
             "version": "2.0.x-dev",
             "source": {
@@ -207,7 +247,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "yuan1994/tp-mailer": 20
+        "yuan1994/tp-mailer": 20,
+        "topthink/think-image": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

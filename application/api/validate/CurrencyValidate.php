@@ -22,9 +22,9 @@ class CurrencyValidate extends Validate
      * @return bool
      * @throws CommonException
      */
-    public function myGoCheck($array,$rule_)
+    public function myGoCheck($array, $rule_)
     {
-        foreach ($array as $k => $v){
+        foreach ($array as $k => $v) {
             $data_name = $v;
             $data_rule = $rule_;
             $this->rule[$data_name] = $data_rule;
@@ -33,15 +33,13 @@ class CurrencyValidate extends Validate
         $requestObj = Request::instance();
         $data = $requestObj->param();
 
-        if($this -> check($data)){
+        if ($this->check($data)) {
             return true;
-        }else{
+        } else {
             $e = new CommonException([
-                'code'=>500,
                 'msg' => $this->error,
                 'error_code' => 100001
             ]);
-
             throw $e;
         }
 
@@ -49,11 +47,11 @@ class CurrencyValidate extends Validate
 
 
     //系统会自动传入几个参数 第一个是 要验证的值，第二个是规则，自己可以规定规则内容或者不写，第三个是最初传入的data。其实不只这三个参数，想了解详细的可以看看文档
-    protected function positiveInt($value, $rule='', $data)
+    protected function positiveInt($value, $rule = '', $data)
     {
-        if (is_int(($value+0))&&($value+0)>0) {
+        if (is_int(($value + 0)) && ($value + 0) > 0) {
             return true;
-        }else{
+        } else {
             return '标识ID必须为正整数';
         }
     }

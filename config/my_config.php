@@ -12,6 +12,8 @@ $json_array = json_decode(file_get_contents($json_file), true);*/
 return [
     //图片存放地址
     'img_file' => dirname(\think\facade\Env::get('root_path')) . '/images/',
+    //图片服务器Url
+    'img_url' => 'http://192.168.0.158:8005/',
     //日志文件
     'log_file' => dirname(\think\facade\Env::get('root_path')) . '/runtime/log/',
     //缓存文件
