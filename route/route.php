@@ -34,8 +34,14 @@ Route::rule('api/:version/ueditor_file_upload$', 'api/:version.Option/returnTrue
 Route::post('api/:version/cms/login$', 'api/:version.cms.CmsAdmin/adminLogin');
 //获取商品列表
 Route::get('api/:version/cms/cms_get_goods_list$', 'api/:version.cms.CmsGoods/giveGoodsListByPage');
+//获取单个商品信息
+Route::get('api/:version/cms/cms_get_goods_info$', 'api/:version.cms.CmsGoods/giveGoodsInfo');
 //添加商品
-Route::post('api/:version/cms/cms_add_goods', 'api/:version.cms.CmsGoods/addGoods');
+Route::post('api/:version/cms/cms_add_goods$', 'api/:version.cms.CmsGoods/addGoods');
+//更新商品
+Route::post('api/:version/cms/cms_upd_goods$', 'api/:version.cms.CmsGoods/updGoods');
+//删除商品
+Route::post('api/:version/cms/cms_del_goods$', 'api/:version.cms.CmsGoods/delGoods');
 //获取分类
 Route::get('api/:version/cms/cms_get_cat_list$', 'api/:version.cms.CmsCat/giveAllCat');
 //获取分类列表

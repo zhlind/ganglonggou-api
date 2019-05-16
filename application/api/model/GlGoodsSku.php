@@ -11,5 +11,13 @@ namespace app\api\model;
 
 class GlGoodsSku extends BaseModel
 {
+    public function getImgUrlAttr($value, $data)
+    {
+        return $this->spellOriginalImg($value, $data);
+    }
 
+    public function getOriginalImgUrlAttr($value, $data)
+    {
+        return $this->spellOriginalImg($value, $data);
+    }
 }

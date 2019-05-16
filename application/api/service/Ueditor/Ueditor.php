@@ -127,7 +127,7 @@ class Ueditor extends Controller
         $file = request()->file($fieldName);
         $info = $file->move(config('my_config.img_file'));
         if ($info) {//上传成功
-            $fname = $info->getSaveName();
+            $fname = str_replace("\\","/",$info->getSaveName());
             $imgArr = explode(',', 'jpg,gif,png,jpeg,bmp,ttf,tif');
             $imgExt = strtolower($info->getExtension());
             $isImg = in_array($imgExt, $imgArr);

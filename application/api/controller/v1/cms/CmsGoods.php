@@ -37,9 +37,14 @@ class CmsGoods
         $data['page'] = request()->param('page');
         $data['limit'] = request()->param('limit');
         $where['is_del'] = 0;
-        $where['goods_name'] = request()->param('goods_name') !== '' ? request()->param('goods_name') : array('exp', Db::raw('is not null'));
-        $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));
-
+        if(request()->param('goods_name') !== ''){
+            $where['goods_name'] = request()->param('goods_name');
+        }
+        if(request()->param('cat_id') !== ''){
+            $where['cat_id'] = request()->param('cat_id');
+        }
+/*        $where['goods_name'] = request()->param('goods_name') !== '' ? request()->param('goods_name') : array('exp', Db::raw('is not null'));
+        $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));*/
         $result['list'] = GlGoods::where($where)
             ->page($data['page'], $data['limit'])
             ->select()
@@ -72,6 +77,7 @@ class CmsGoods
 
         $data['cat_id'] = request()->param('cat_id');
         $data['goods_name'] = request()->param('goods_name');
+        $data['goods_head_name'] = request()->param('goods_head_name');
         $data['click_count'] = 0;
         $data['promote_number'] = request()->param('promote_number');
         $data['promote_start_date'] = request()->param('promote_start_date');
@@ -138,6 +144,142 @@ class CmsGoods
     }
 
     /**
+     * @return array|\PDOStatement|string|\think\Model|null
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 返回商品信息
+     */
+    public function giveGoodsInfo(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+
+        $data['goods_id'] = request()->param('goods_id');
+
+        $result = GlGoods::where($data)->find();
+        if(!$result){
+            throw new CommonException(['无效商品']);
+        }
+        $result = $result->toArray();
+
+        $result['goods_sku'] = GlGoodsSku::where($data)->select();
+        $result['goods_gallery'] = GlGoodsGallery::where($data)->select();
+
+        return $result;
+    }
+
+    public function updGoods(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['cat_id', 'goods_name', 'promote_number', 'promote_start_date'
+            , 'promote_end_date', 'goods_img', 'original_img', 'is_on_sale'
+            , 'is_best', 'is_new', 'is_hot', 'is_promote', 'goods_sales_volume', 'evaluate_count', 'attribute', 'goods_gallery', 'goods_sku_array','goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['cat_id','goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+
+        $data2['goods_id'] = request()->param('goods_id');
+
+        $data['cat_id'] = request()->param('cat_id');
+        $data['goods_name'] = request()->param('goods_name');
+        $data['goods_head_name'] = request()->param('goods_head_name');
+        $data['click_count'] = 0;
+        $data['promote_number'] = request()->param('promote_number');
+        $data['promote_start_date'] = request()->param('promote_start_date');
+        $data['promote_end_date'] = request()->param('promote_end_date');
+        $data['keywords'] = request()->param('keywords');
+        $data['goods_brief'] = request()->param('goods_brief');
+        $data['goods_desc'] = $this->removeImgUrl(request()->param('goods_desc'));
+        $data['goods_img'] = $this->removeImgUrl(request()->param('goods_img'));
+        $data['original_img'] = $this->removeImgUrl(request()->param('original_img'));
+        $data['is_on_sale'] = request()->param('is_on_sale');
+        $data['add_time'] = time();
+        $data['sort_order'] = 99;
+        $data['is_del'] = 0;
+        $data['is_best'] = request()->param('is_best');
+        $data['is_new'] = request()->param('is_new');
+        $data['is_hot'] = request()->param('is_hot');
+        $data['is_promote'] = request()->param('is_promote');
+        $data['upd_time'] = time();
+        $data['seller_note'] = '';
+        $data['goods_sales_volume'] = request()->param('goods_sales_volume');
+        $data['evaluate_count'] = request()->param('evaluate_count');
+        $data['attribute'] = json_encode(request()->param('attribute/a'));
+
+        $goods_gallery_array = request()->param('goods_gallery/a');
+        $goods_sku_array = request()->param('goods_sku_array/a');
+
+        $data['goods_stock'] = $this->countGoodsStock($goods_sku_array);
+        $data['market_price'] = $this->mpMarketPrice($goods_sku_array);
+        $data['shop_price'] = $this->mpShopPrice($goods_sku_array);
+
+        //更新商品
+        $upd_number =  $goods_info = GlGoods::where($data2)->update($data);
+        //删除商品附属信息
+        GlGoodsGallery::where($data2)->delete();
+        GlGoodsSku::where($data2)->delete();
+
+        if ($upd_number > 0) {
+            //生成商品相册
+            foreach ($goods_gallery_array as $k => $v) {
+                $data_goods_gallery['goods_id'] = $data2['goods_id'];
+                $data_goods_gallery['img_url'] = $this->removeImgUrl($v['url']);
+                $data_goods_gallery['img_original'] = $this->removeImgUrl($v['original_url']);
+                GlGoodsGallery::create($data_goods_gallery);
+            }
+            //生成sku
+            foreach ($goods_sku_array as $k => $v) {
+                $data_goods_sku['goods_id'] = $data2['goods_id'];
+                $data_goods_sku['sku_desc'] = $v['sku_desc'];
+                $data_goods_sku['sku_stock'] = $v['sku_stock'];
+                $data_goods_sku['sku_shop_price'] = $v['sku_shop_price'];
+                $data_goods_sku['sku_market_price'] = $v['sku_market_price'];
+                $data_goods_sku['give_integral'] = $v['give_integral'];
+                $data_goods_sku['integral'] = $v['integral'];
+                $data_goods_sku['img_url'] = $this->removeImgUrl($v['img_url']);
+                $data_goods_sku['original_img_url'] = $this->removeImgUrl($v['original_img_url']);
+                GlGoodsSku::create($data_goods_sku);
+            }
+
+        } else {
+            throw new CommonException(['msg' => '保存失败']);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 删除商品
+     */
+    public function delGoods(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+        $data['goods_id'] = request()->param('goods_id');
+
+        //根据商品id删除商品
+        $upd_number =  GlGoods::where($data)->update(['is_del'=>1]);
+        if($upd_number<1){
+            throw new CommonException(['msg'=>'删除失败']);
+        }
+
+        return true;
+
+    }
+
+    /**
      * @param $file
      * @return string
      * 去除图片中的url
@@ -145,7 +287,7 @@ class CmsGoods
     private function removeImgUrl($file)
     {
 
-        if (strpos($file, config('my_config.img_url'))) {
+        if (strpos($file, config('my_config.img_url')) >= 0) {
 
             return str_replace(config('my_config.img_url'), '', $file);
 
@@ -179,7 +321,7 @@ class CmsGoods
     {
         for ($i = 0; $i < count($arr); $i++) {
             for ($j = $i; $j < count($arr); $j++) {
-                if ($arr[$i]['sku_market_price'] + 0 < $arr[$j]['sku_market_price'] + 0) {
+                if ($arr[$i]['sku_market_price'] + 0 > $arr[$j]['sku_market_price'] + 0) {
                     $temp = $arr[$i];
                     $arr[$i] = $arr[$j];
                     $arr[$j] = $temp;
@@ -198,7 +340,7 @@ class CmsGoods
     {
         for ($i = 0; $i < count($arr); $i++) {
             for ($j = $i; $j < count($arr); $j++) {
-                if ($arr[$i]['sku_shop_price'] + 0 < $arr[$j]['sku_shop_price'] + 0) {
+                if ($arr[$i]['sku_shop_price'] + 0 > $arr[$j]['sku_shop_price'] + 0) {
                     $temp = $arr[$i];
                     $arr[$i] = $arr[$j];
                     $arr[$j] = $temp;

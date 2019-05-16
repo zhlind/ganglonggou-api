@@ -11,5 +11,13 @@ namespace app\api\model;
 
 class GlGoodsGallery extends BaseModel
 {
+    public function getImgUrlAttr($value, $data)
+    {
+        return $this->spellOriginalImg($value, $data);
+    }
 
+    public function getImgOriginalAttr($value, $data)
+    {
+        return $this->spellOriginalImg($value, $data);
+    }
 }

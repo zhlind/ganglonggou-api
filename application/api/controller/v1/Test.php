@@ -14,6 +14,6 @@ class Test
         /*//$json_file = \think\facade\Env::get('root_path') + '../config/ganglonggou.json';
         $json_file = dirname(\think\facade\Env::get('root_path')) . '/config/ganglonggou.json';
         $json_array = json_decode(file_get_contents($json_file),true);*/
-        echo config('my_config.hostname');
+        return strpos(config('my_config.img_url'),'http://192.168.0.158:8005/20190516/bf1fe30265aa7bf83dd561823a6a373b.jpg');
     }
 }

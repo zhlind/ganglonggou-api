@@ -13,7 +13,7 @@ return [
     //图片存放地址
     'img_file' => dirname(\think\facade\Env::get('root_path')) . '/images/',
     //图片服务器Url
-    'img_url' => 'http://192.168.0.158:8005/',
+    'img_url' => _GL_CONFIG_['img_url'],
     //日志文件
     'log_file' => dirname(\think\facade\Env::get('root_path')) . '/runtime/log/',
     //缓存文件
