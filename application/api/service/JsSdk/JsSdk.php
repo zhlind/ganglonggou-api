@@ -48,7 +48,6 @@ class JsSdk
     }
 
     public function giveSignature($url){
-        //$access_token = $this->getAccess();
         $url = URLdecode($url);
         $app_id = config('my_config.wx_app_id');
         $js_api_ticket = $this->getJsApi();
@@ -59,8 +58,6 @@ class JsSdk
 
         $result['appId'] = $app_id;
         $result['timestamp'] = $timestamp;
-       /* $result['js_api_ticket'] = $js_api_ticket;
-        $result['js_api_ticket'] = $js_api_ticket;*/
         $result['nonceStr'] = $noncestr;
         $result['signature'] = $signature;
 
