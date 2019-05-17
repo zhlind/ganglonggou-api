@@ -19,9 +19,9 @@ class BaseModel extends Model
     }
     //img标签拼接图片
     protected  function imgTagSpellOriginalImg($value,$data){
-        $img_src =  'src='. config('my_config.img_url');
+        $img_src =  'src="'. config('my_config.img_url');
         $str = str_replace('src="',$img_src, $value);
-        $str = str_replace('"','', $str);
+        //$str = str_replace('"','', $str);
         return $str;
     }
 }

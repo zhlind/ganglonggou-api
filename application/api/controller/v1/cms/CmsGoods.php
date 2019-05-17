@@ -9,6 +9,7 @@
 namespace app\api\controller\v1\cms;
 
 
+use app\api\model\GlCategory;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsGallery;
 use app\api\model\GlGoodsSku;
@@ -37,14 +38,14 @@ class CmsGoods
         $data['page'] = request()->param('page');
         $data['limit'] = request()->param('limit');
         $where['is_del'] = 0;
-        if(request()->param('goods_name') !== ''){
+        if (request()->param('goods_name') !== '') {
             $where['goods_name'] = request()->param('goods_name');
         }
-        if(request()->param('cat_id') !== ''){
+        if (request()->param('cat_id') !== '') {
             $where['cat_id'] = request()->param('cat_id');
         }
-/*        $where['goods_name'] = request()->param('goods_name') !== '' ? request()->param('goods_name') : array('exp', Db::raw('is not null'));
-        $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));*/
+        /*        $where['goods_name'] = request()->param('goods_name') !== '' ? request()->param('goods_name') : array('exp', Db::raw('is not null'));
+                $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));*/
         $result['list'] = GlGoods::where($where)
             ->page($data['page'], $data['limit'])
             ->select()
@@ -151,7 +152,8 @@ class CmsGoods
      * @throws \think\exception\DbException
      * 返回商品信息
      */
-    public function giveGoodsInfo(){
+    public function giveGoodsInfo()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
         //验证正整数
@@ -162,7 +164,7 @@ class CmsGoods
         $data['goods_id'] = request()->param('goods_id');
 
         $result = GlGoods::where($data)->find();
-        if(!$result){
+        if (!$result) {
             throw new CommonException(['无效商品']);
         }
         $result = $result->toArray();
@@ -173,13 +175,21 @@ class CmsGoods
         return $result;
     }
 
-    public function updGoods(){
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 更新商品
+     */
+    public function updGoods()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['cat_id', 'goods_name', 'promote_number', 'promote_start_date'
             , 'promote_end_date', 'goods_img', 'original_img', 'is_on_sale'
-            , 'is_best', 'is_new', 'is_hot', 'is_promote', 'goods_sales_volume', 'evaluate_count', 'attribute', 'goods_gallery', 'goods_sku_array','goods_id'], 'require');
+            , 'is_best', 'is_new', 'is_hot', 'is_promote', 'goods_sales_volume', 'evaluate_count', 'attribute', 'goods_gallery', 'goods_sku_array', 'goods_id'], 'require');
         //验证正整数
-        (new CurrencyValidate())->myGoCheck(['cat_id','goods_id'], 'positiveInt');
+        (new CurrencyValidate())->myGoCheck(['cat_id', 'goods_id'], 'positiveInt');
 
         UserAuthority::checkAuthority(8);
 
@@ -219,7 +229,7 @@ class CmsGoods
         $data['shop_price'] = $this->mpShopPrice($goods_sku_array);
 
         //更新商品
-        $upd_number =  $goods_info = GlGoods::where($data2)->update($data);
+        $upd_number = $goods_info = GlGoods::where($data2)->update($data);
         //删除商品附属信息
         GlGoodsGallery::where($data2)->delete();
         GlGoodsSku::where($data2)->delete();
@@ -254,13 +264,62 @@ class CmsGoods
     }
 
     /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 搜索商品
+     */
+    public function searchGoods()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_name'], 'require');
+        UserAuthority::checkAuthority(8);
+        $where = [];
+        array_push($where, ['goods_name', 'like', '%' . request()->param('goods_name') . '%']);
+        array_push($where, ['is_del', '=', 0]);
+        $result = GlGoods::where($where)
+            ->field('goods_id,goods_name')
+            ->select();
+
+        return $result;
+
+    }
+
+    /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 查询商品2
+     */
+    public function giveGoodsByGoodsIdArray()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id_array'], 'require');
+        UserAuthority::checkAuthority(8);
+
+        $goods_id_array = request()->param('goods_id_array/a');
+        $where = [];
+        array_push($where, ['goods_id', 'in', $goods_id_array]);
+        $result = GlGoods::where($where)
+            ->field('goods_id,goods_name')
+            ->select();
+
+        return $result;
+    }
+
+    /**
      * @return bool
      * @throws CommonException
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      * 删除商品
      */
-    public function delGoods(){
+    public function delGoods()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
         //验证正整数
@@ -270,10 +329,53 @@ class CmsGoods
         $data['goods_id'] = request()->param('goods_id');
 
         //根据商品id删除商品
-        $upd_number =  GlGoods::where($data)->update(['is_del'=>1]);
-        if($upd_number<1){
-            throw new CommonException(['msg'=>'删除失败']);
+        $upd_number = GlGoods::where($data)->update(['is_del' => 1]);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '删除失败']);
         }
+
+        return true;
+
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     * 批量修改商品头
+     */
+    public function updGoodsNameHeadName(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_head_name','parent_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['parent_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+
+        $data['parent_id'] = request()->param('parent_id');
+        $update['goods_head_name'] = request()->param('goods_head_name');
+
+        $cat_id_array_ = GlCategory::where($data)
+            ->select()
+            ->toArray();
+        $cat_id_array = [];
+        if(count($cat_id_array_)>0){
+            foreach ($cat_id_array_ as $k => $v){
+                array_push($cat_id_array,$v['cat_id']);
+            }
+        }else{
+            throw new CommonException(['msg'=>'无效的顶级分类']);
+        }
+
+        $where = [];
+        array_push($where, ['cat_id', 'in', $cat_id_array]);
+
+        GlGoods::where($where)
+            ->update($update);
 
         return true;
 
@@ -319,7 +421,7 @@ class CmsGoods
      */
     private function mpMarketPrice($arr)
     {
-        for ($i = 0; $i < count($arr); $i++) {
+       /* for ($i = 0; $i < count($arr); $i++) {
             for ($j = $i; $j < count($arr); $j++) {
                 if ($arr[$i]['sku_market_price'] + 0 > $arr[$j]['sku_market_price'] + 0) {
                     $temp = $arr[$i];
@@ -328,7 +430,14 @@ class CmsGoods
                 }
             }
         }
-        return $arr[0]['sku_market_price'];
+        return $arr[0]['sku_market_price'];*/
+
+        $min_array = [];
+        foreach ($arr as $k => $v){
+            array_push($min_array,$v['sku_market_price']);
+        }
+        return min($min_array);
+
     }
 
     /**
@@ -338,7 +447,7 @@ class CmsGoods
      */
     private function mpShopPrice($arr)
     {
-        for ($i = 0; $i < count($arr); $i++) {
+        /*for ($i = 0; $i < count($arr); $i++) {
             for ($j = $i; $j < count($arr); $j++) {
                 if ($arr[$i]['sku_shop_price'] + 0 > $arr[$j]['sku_shop_price'] + 0) {
                     $temp = $arr[$i];
@@ -346,8 +455,12 @@ class CmsGoods
                     $arr[$j] = $temp;
                 }
             }
+        }*/
+        $min_array = [];
+        foreach ($arr as $k => $v){
+            array_push($min_array,$v['sku_shop_price']);
         }
-        return $arr[0]['sku_shop_price'];
+        return min($min_array);
     }
 
     /**

@@ -26,4 +26,8 @@ return [
     'token_expire_in_7day' => 604800000,
     //wx各种缓存到期时间
     'wx_expire_in' => 6000,
+    //wxAppId
+    'wx_app_id' =>_GL_CONFIG_['wx_app_id'],
+    //WxSecret
+     'wx_secret' =>_GL_CONFIG_['wx_secret']
 ];
