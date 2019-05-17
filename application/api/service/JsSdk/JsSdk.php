@@ -49,15 +49,37 @@ class JsSdk
 
     public function giveSignature($url){
         //$access_token = $this->getAccess();
+        $url = URLdecode($url);
         $app_id = config('my_config.wx_app_id');
         $js_api_ticket = $this->getJsApi();
         $noncestr = getRandCharD(13);
         $timestamp = time();
-        $string='js_api_ticket='.$js_api_ticket.'&noncestr='.$noncestr.'&timestamp='.$timestamp.'&url='.$url;
+        $string='jsapi_ticket='.$js_api_ticket.'&noncestr='.$noncestr.'&timestamp='.$timestamp.'&url='.$url;
         $signature = sha1($string);
 
-        $result['app_id'] = $app_id;
+        $result['appId'] = $app_id;
         $result['timestamp'] = $timestamp;
+       /* $result['js_api_ticket'] = $js_api_ticket;
+        $result['js_api_ticket'] = $js_api_ticket;*/
+        $result['nonceStr'] = $noncestr;
+        $result['signature'] = $signature;
+
+        return $result;
+    }
+
+    public function giveTestSignature($url){
+        //$access_token = $this->getAccess();
+        $app_id = config('my_config.wx_app_id');
+        $js_api_ticket = $this->getJsApi();
+        $noncestr = getRandCharD(13);
+        $timestamp = time();
+        $string='jsapi_ticket='.$js_api_ticket.'&noncestr='.$noncestr.'&timestamp='.$timestamp.'&url='.$url;
+        $signature = sha1($string);
+
+        $result['appId'] = $app_id;
+        $result['timestamp'] = $timestamp;
+        $result['js_api_ticket'] = $js_api_ticket;
+        $result['string'] = $string;
         $result['nonceStr'] = $noncestr;
         $result['signature'] = $signature;
 

@@ -25,7 +25,7 @@ class GoodsMakeIndex
         $into_type = request()->param('into_type');
         switch ($into_type) {
             case 'redBullMake-hw':
-                $parent_id = 145;
+                $parent_id = 140;
                 break;
             case 'redBullMake-gl':
                 $parent_id = 145;
