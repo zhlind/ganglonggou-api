@@ -80,7 +80,7 @@ class MakeOrder
         $data['make_state'] = 0;
         $data['into_type'] = $this->intoType;
         $data['goods_id'] = $this->goodsId;
-        $data['goods_name'] = $this->goodsInfo['goods_id'];
+        $data['goods_name'] = $this->goodsInfo['goods_name'];
         $data['sku_id'] = $this->skuId;
         $data['sku_desc'] = $this->skuInfo['sku_desc'];
         $data['goods_number'] = $this->goodsNumber;

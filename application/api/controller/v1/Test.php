@@ -30,7 +30,7 @@ class Test extends Controller
             ->field('goods_id,market_price,shop_price,attribute')
             ->select()
             ->toArray();
-
+        $count = 0;
         foreach ($goods_array as $index => $goods_info) {
             $attribute = $goods_info['attribute'];
             $attribute_array = [];
@@ -52,23 +52,29 @@ class Test extends Controller
 
             $sku_desc_array = array_merge(array_diff($sku_array_, $sku_array), array_diff($sku_array, $sku_array_));
 
+
+
             if (count($sku_desc_array) > 0) {
-                $data['goods_id'] = $goods_info['goods_id'];
-                $data['sku_stock'] = 0;
-                $data['sku_shop_price'] = $goods_info['shop_price'];
-                $data['sku_market_price'] = $goods_info['market_price'];
-                $data['goods_id'] = $goods_info['goods_id'];
-                $data['give_integral'] = 0;
-                $data['integral'] = 0;
-                $data['img_url'] = $this->removeImgUrl($sku_info[0]['img_url']);
-                $data['original_img_url'] = $this->removeImgUrl($sku_info[0]['original_img_url']);
-                $data['sku_desc'] = $sku_desc_array[0];
-                GlGoodsSku::create($data);
+                foreach ($sku_desc_array as $index2 => $value2){
+                    $data['goods_id'] = $goods_info['goods_id'];
+                    $data['sku_stock'] = 0;
+                    $data['sku_shop_price'] = $goods_info['shop_price'];
+                    $data['sku_market_price'] = $goods_info['market_price'];
+                    $data['goods_id'] = $goods_info['goods_id'];
+                    $data['give_integral'] = 0;
+                    $data['integral'] = 0;
+                    $data['img_url'] = $this->removeImgUrl($sku_info[0]['img_url']);
+                    $data['original_img_url'] = $this->removeImgUrl($sku_info[0]['original_img_url']);
+                    $data['sku_desc'] = $value2;
+                    GlGoodsSku::create($data);
+                    $count ++;
+                }
+
             }
 
         }
 
-        return true;
+        return $count;
 
     }
 
