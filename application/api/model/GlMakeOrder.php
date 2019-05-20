@@ -11,6 +11,16 @@ namespace app\api\model;
 
 class GlMakeOrder extends BaseModel
 {
+
+
+    public function getMakeTimeAttr($value,$data){
+        if($value!=null){
+            return date("Y-m-d H:i:s",$value);
+        }else{
+            return $value;
+        }
+    }
+
     /**
      * @param $make_order_sn
      * @return array|\PDOStatement|string|\think\Model|null

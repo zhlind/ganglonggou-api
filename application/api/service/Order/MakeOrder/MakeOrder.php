@@ -101,7 +101,7 @@ class MakeOrder
             ->setDec('sku_stock',$this->goodsNumber);
         /*增加销量*/
         GlGoods::where(['goods_id'=>$this->goodsId])
-            ->setInc('evaluate_count',$this->goodsNumber);
+            ->setInc('goods_sales_volume',$this->goodsNumber);
         /*发送邮件*/
         $head = '新预约提醒';
         $body = '  用户成功预约，预约入口：'.$this->intoType.'，预约单号：'.$this->makeOrderSn;
