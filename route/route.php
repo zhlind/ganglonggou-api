@@ -52,6 +52,8 @@ Route::post('api/:version/cms/cms_upd_goods$', 'api/:version.cms.CmsGoods/updGoo
 Route::post('api/:version/cms/cms_del_goods$', 'api/:version.cms.CmsGoods/delGoods');
 //批量修改商品头
 Route::post('api/:version/cms/cms_batch_upd_goods_head_name$', 'api/:version.cms.CmsGoods/updGoodsNameHeadName');
+//批量修改商品头
+Route::post('api/:version/cms/cms_copy_goods_by_parent_id$', 'api/:version.cms.CmsGoods/copyGoodsByParentId');
 //获取分类
 Route::get('api/:version/cms/cms_get_cat_list$', 'api/:version.cms.CmsCat/giveAllCat');
 //获取分类列表

@@ -17,6 +17,15 @@ use app\api\validate\CurrencyValidate;
 class GoodsInfo
 {
 
+    /**
+     * @return mixed
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 获取额外商品信息
+     */
     public function giveExtraGoodsInfo(){
 
         //验证必要
@@ -39,6 +48,14 @@ class GoodsInfo
 
     }
 
+    /**
+     * @return array
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 获取商品信息
+     */
     public function giveGoodsInfoByGoodsId(){
 
         //验证必要

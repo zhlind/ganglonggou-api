@@ -19,7 +19,8 @@ class Test extends Controller
 {
     public function test()
     {
-        //return $this->delSku();
+        $data = array('name'=>'apple','age'=>12,'address'=>'ChinaGuangZhou');
+        return $this->byKeyrRemoveArrVal($data,'name');
     }
 
     /**
@@ -193,5 +194,23 @@ class Test extends Controller
             }
         }
         return $repeat_arr;
+    }
+
+    /**
+     * @param $arr
+     * @param $key
+     * @return mixed
+     * 根据键删除数组项
+     */
+    private function byKeyrRemoveArrVal($arr, $key){
+        if(!array_key_exists($key, $arr)){
+            return $arr;
+        }
+        $keys = array_keys($arr);
+        $index = array_search($key, $keys);
+        if($index !== FALSE){
+            array_splice($arr, $index, 1);
+        }
+        return $arr;
     }
 }

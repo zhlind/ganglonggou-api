@@ -48,6 +48,7 @@ class CmsGoods
                 $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));*/
         $result['list'] = GlGoods::where($where)
             ->page($data['page'], $data['limit'])
+            ->order('goods_id desc')
             ->select()
             ->toArray();
 
@@ -144,6 +145,89 @@ class CmsGoods
 
     }
 
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 通过顶级分类复制商品
+     */
+    public function copyGoodsByParentId()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['parent_id', 'to_parent_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['parent_id', 'to_parent_id'], 'positiveInt');
+        //权限
+        UserAuthority::checkAuthority(8);
+
+        $parent_id = request()->param('parent_id');
+        $to_parent_id = request()->param('to_parent_id');
+
+        $cat_array_ = GlCategory::where(['parent_id' => $parent_id])
+            ->select()
+            ->toArray();
+
+        //取得cat_id,取得需要的分类信息
+        if (count($cat_array_) > 0) {
+            foreach ($cat_array_ as $k => $v) {
+                $cat_add_data['cat_name'] = $v['cat_name'];
+                $cat_add_data['parent_id'] = $to_parent_id;
+                $cat_add_data['sort_order'] = $v['sort_order'];
+                //复制分类
+                $cat_info = GlCategory::create($cat_add_data);
+                //辅助分类下商品
+                $goods_array = GlGoods::where(['cat_id' => $v['cat_id'], 'is_del' => 0])
+                    ->select()
+                    ->toArray();
+                if (count($goods_array) > 0) {
+                    foreach ($goods_array as $k2 => $v2) {
+                        //复制商品
+                        $goods_id = $v2['goods_id'];
+                        $attribute = json_encode($v2['attribute'],true);
+                        $goods_info = $this->byKeyRemoveArrVal($v2, 'goods_id');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'cat_id');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'attribute');
+                        $goods_info['cat_id'] = $cat_info->id;
+                        $goods_info['attribute'] = $attribute;
+                        $add_goods_info = GlGoods::create($goods_info);
+                        //复制商品sku
+                        $sku_array = GlGoodsSku::where(['goods_id' => $goods_id])
+                            ->select()
+                            ->toArray();
+                        if (count($sku_array) > 0) {
+                            foreach ($sku_array as $sku_k => $sku_v){
+                                $sku_info = $this->byKeyRemoveArrVal($sku_v,'goods_id');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'sku_id');
+                                $sku_info['goods_id'] = $add_goods_info->id;
+                                GlGoodsSku::create($sku_info);
+                            }
+                        }
+                        //复制商品相册
+                        $gallery_array = GlGoodsGallery::where(['goods_id' => $goods_id])
+                            ->select()
+                            ->toArray();
+                        if (count($gallery_array) > 0) {
+                            foreach ($gallery_array as $gallery_k => $gallery_v){
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_v,'goods_id');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'goods_gallery_id');
+                                $gallery_info['goods_id'] = $add_goods_info->id;
+                                GlGoodsGallery::create($gallery_info);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            throw new CommonException(['msg' => '无效的顶级分类']);
+        }
+
+        return true;
+
+    }
+
     /**
      * @return array|\PDOStatement|string|\think\Model|null
      * @throws CommonException
@@ -208,7 +292,6 @@ class CmsGoods
         $data['goods_img'] = $this->removeImgUrl(request()->param('goods_img'));
         $data['original_img'] = $this->removeImgUrl(request()->param('original_img'));
         $data['is_on_sale'] = request()->param('is_on_sale');
-        $data['add_time'] = time();
         $data['sort_order'] = 99;
         $data['is_del'] = 0;
         $data['is_best'] = request()->param('is_best');
@@ -348,9 +431,10 @@ class CmsGoods
      * @throws \think\exception\PDOException
      * 批量修改商品头
      */
-    public function updGoodsNameHeadName(){
+    public function updGoodsNameHeadName()
+    {
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['goods_head_name','parent_id'], 'require');
+        (new CurrencyValidate())->myGoCheck(['goods_head_name', 'parent_id'], 'require');
         //验证正整数
         (new CurrencyValidate())->myGoCheck(['parent_id'], 'positiveInt');
 
@@ -363,12 +447,12 @@ class CmsGoods
             ->select()
             ->toArray();
         $cat_id_array = [];
-        if(count($cat_id_array_)>0){
-            foreach ($cat_id_array_ as $k => $v){
-                array_push($cat_id_array,$v['cat_id']);
+        if (count($cat_id_array_) > 0) {
+            foreach ($cat_id_array_ as $k => $v) {
+                array_push($cat_id_array, $v['cat_id']);
             }
-        }else{
-            throw new CommonException(['msg'=>'无效的顶级分类']);
+        } else {
+            throw new CommonException(['msg' => '无效的顶级分类']);
         }
 
         $where = [];
@@ -421,20 +505,20 @@ class CmsGoods
      */
     private function mpMarketPrice($arr)
     {
-       /* for ($i = 0; $i < count($arr); $i++) {
-            for ($j = $i; $j < count($arr); $j++) {
-                if ($arr[$i]['sku_market_price'] + 0 > $arr[$j]['sku_market_price'] + 0) {
-                    $temp = $arr[$i];
-                    $arr[$i] = $arr[$j];
-                    $arr[$j] = $temp;
-                }
-            }
-        }
-        return $arr[0]['sku_market_price'];*/
+        /* for ($i = 0; $i < count($arr); $i++) {
+             for ($j = $i; $j < count($arr); $j++) {
+                 if ($arr[$i]['sku_market_price'] + 0 > $arr[$j]['sku_market_price'] + 0) {
+                     $temp = $arr[$i];
+                     $arr[$i] = $arr[$j];
+                     $arr[$j] = $temp;
+                 }
+             }
+         }
+         return $arr[0]['sku_market_price'];*/
 
         $min_array = [];
-        foreach ($arr as $k => $v){
-            array_push($min_array,$v['sku_market_price']);
+        foreach ($arr as $k => $v) {
+            array_push($min_array, $v['sku_market_price']);
         }
         return min($min_array);
 
@@ -457,8 +541,8 @@ class CmsGoods
             }
         }*/
         $min_array = [];
-        foreach ($arr as $k => $v){
-            array_push($min_array,$v['sku_shop_price']);
+        foreach ($arr as $k => $v) {
+            array_push($min_array, $v['sku_shop_price']);
         }
         return min($min_array);
     }
@@ -475,5 +559,24 @@ class CmsGoods
         GlGoods::where(['goods_id' => $goods_id])
             ->update(['goods_sn' => 'GSN000' . $goods_id]);
 
+    }
+
+    /**
+     * @param $arr
+     * @param $key
+     * @return mixed
+     * 根据键删除数组项
+     */
+    private function byKeyRemoveArrVal($arr, $key)
+    {
+        if (!array_key_exists($key, $arr)) {
+            return $arr;
+        }
+        $keys = array_keys($arr);
+        $index = array_search($key, $keys);
+        if ($index !== FALSE) {
+            array_splice($arr, $index, 1);
+        }
+        return $arr;
     }
 }

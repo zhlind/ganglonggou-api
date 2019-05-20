@@ -17,6 +17,14 @@ use app\lib\exception\CommonException;
 
 class GoodsMakeIndex
 {
+    /**
+     * @return mixed
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 获取首页信息
+     */
     public function giveIndexInfo()
     {
 

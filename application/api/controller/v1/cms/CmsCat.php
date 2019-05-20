@@ -48,6 +48,7 @@ class CmsCat
         $data['limit'] = request()->param('limit');
 
         $result['list'] = GlCategory::page($data['page'], $data['limit'])
+            ->order('cat_id desc')
             ->select();
 
         $result['count'] = GlCategory::count();
