@@ -16,7 +16,7 @@ class GlGoods extends BaseModel
 
     static private $screenGoodsInfo = 'goods_id,cat_id,goods_sn,goods_name,goods_head_name,
             market_price,shop_price,keywords,goods_brief,goods_desc,
-            goods_img,original_img,sort_order,goods_sales_volume,evaluate_count,attribute';//对外筛选后的商品信息
+            goods_img,original_img,sort_order,goods_sales_volume,evaluate_count,attribute,is_promote';//对外筛选后的商品信息
 
     public function getOriginalImgAttr($value, $data)
     {

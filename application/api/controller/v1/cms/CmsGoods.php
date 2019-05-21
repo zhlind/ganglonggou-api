@@ -189,10 +189,24 @@ class CmsGoods
                         $attribute = json_encode($v2['attribute'],true);
                         $goods_info = $this->byKeyRemoveArrVal($v2, 'goods_id');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'cat_id');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'goods_img');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'original_img');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'goods_desc');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'attribute');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'add_time');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'upd_time');
                         $goods_info['cat_id'] = $cat_info->id;
                         $goods_info['attribute'] = $attribute;
+                        $goods_info['add_time'] = time();
+                        $goods_info['upd_time'] = time();
+                        $goods_info['goods_img'] = $this->removeImgUrl($v2['goods_img']);
+                        $goods_info['original_img'] = $this->removeImgUrl($v2['original_img']);
+                        $goods_info['goods_desc'] = $this->removeImgUrl($v2['goods_desc']);
                         $add_goods_info = GlGoods::create($goods_info);
+
+                        //生成货号
+                        $this->addGoodsSn($add_goods_info->id);
+
                         //复制商品sku
                         $sku_array = GlGoodsSku::where(['goods_id' => $goods_id])
                             ->select()
@@ -201,7 +215,11 @@ class CmsGoods
                             foreach ($sku_array as $sku_k => $sku_v){
                                 $sku_info = $this->byKeyRemoveArrVal($sku_v,'goods_id');
                                 $sku_info = $this->byKeyRemoveArrVal($sku_info,'sku_id');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'img_url');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'original_img_url');
                                 $sku_info['goods_id'] = $add_goods_info->id;
+                                $sku_info['img_url'] = $this->removeImgUrl($sku_v['img_url']);
+                                $sku_info['original_img_url'] = $this->removeImgUrl($sku_v['original_img_url']);
                                 GlGoodsSku::create($sku_info);
                             }
                         }
@@ -213,7 +231,11 @@ class CmsGoods
                             foreach ($gallery_array as $gallery_k => $gallery_v){
                                 $gallery_info = $this->byKeyRemoveArrVal($gallery_v,'goods_id');
                                 $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'goods_gallery_id');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_url');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_original');
                                 $gallery_info['goods_id'] = $add_goods_info->id;
+                                $gallery_info['img_url'] = $this->removeImgUrl($gallery_v['img_url']);
+                                $gallery_info['img_original'] = $this->removeImgUrl($gallery_v['img_original']);
                                 GlGoodsGallery::create($gallery_info);
                             }
                         }

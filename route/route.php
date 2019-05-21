@@ -87,3 +87,10 @@ Route::get('api/:version/goods_make/get_extra_goods_info$', 'api/:version.goods_
 Route::get('api/:version/goods_make/get_goods_info$', 'api/:version.goods_make.GoodsInfo/giveGoodsInfoByGoodsId');
 //提交预约订单
 Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.MakeOrder/addOrder');
+
+
+/*普通*/
+//获取首页信息
+Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
+//商品额外信息
+Route::get('api/:version/get_extra_goods_info', 'api/:version.common.Goods/giveExtraGoodsInfo');
