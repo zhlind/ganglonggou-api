@@ -44,6 +44,7 @@ class Index
             ->select();
 
         $result['cat_list'] = GlCategory::where(['parent_id'=>$parent_id])
+            ->order(['sort_order'=>'desc'])
             ->field('cat_id,cat_name')
             ->select();
 

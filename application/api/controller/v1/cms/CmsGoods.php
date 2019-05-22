@@ -149,9 +149,11 @@ class CmsGoods
     /**
      * @return bool
      * @throws CommonException
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      * 通过顶级分类复制商品
      */
     public function copyGoodsByParentId()
@@ -385,7 +387,7 @@ class CmsGoods
         array_push($where, ['goods_name', 'like', '%' . request()->param('goods_name') . '%']);
         array_push($where, ['is_del', '=', 0]);
         $result = GlGoods::where($where)
-            ->field('goods_id,goods_name')
+            ->field('goods_id,concat_ws(\'&\',goods_head_name,goods_name) as goods_name')
             ->select();
 
         return $result;

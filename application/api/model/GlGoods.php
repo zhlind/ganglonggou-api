@@ -35,7 +35,6 @@ class GlGoods extends BaseModel
 
     public function getAttributeAttr($value, $data)
     {
-
         return json_decode($value, true);
     }
 

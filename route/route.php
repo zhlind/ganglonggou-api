@@ -9,16 +9,6 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 //use think\facade\Route;
-/*Route::get('think', function () {
-    return 'hello,ThinkPHP5!';
-});
-
-Route::get('hello/:name', 'index/hello');
-
-return [
-
-];*/
-
 use think\facade\Route;
 
 /*测试*/
@@ -43,7 +33,7 @@ Route::get('api/:version/cms/cms_get_goods_info$', 'api/:version.cms.CmsGoods/gi
 //搜索商品
 Route::get('api/:version/cms/cms_search_goods$', 'api/:version.cms.CmsGoods/searchGoods');
 //搜索商品
-Route::get('api/:version/cms/cms_git_goods_by_goods_id_array', 'api/:version.cms.CmsGoods/giveGoodsByGoodsIdArray');
+Route::get('api/:version/cms/cms_get_goods_by_goods_id_array', 'api/:version.cms.CmsGoods/giveGoodsByGoodsIdArray');
 //添加商品
 Route::post('api/:version/cms/cms_add_goods$', 'api/:version.cms.CmsGoods/addGoods');
 //更新商品
@@ -77,6 +67,12 @@ Route::post('api/:version/cms/cms_del_index_ad$', 'api/:version.cms.CmsIndexAd/d
 Route::get('api/:version/cms/cms_get_make_order_list$', 'api/:version.cms.CmsMakeOrder/giveMakeOderList');
 Route::post('api/:version/cms/cms_handle_make_order$', 'api/:version.cms.CmsMakeOrder/handleMakeOrder');
 Route::post('api/:version/cms/cms_del_make_order$', 'api/:version.cms.CmsMakeOrder/delMakeOrder');
+//优惠券
+Route::get('api/:version/cms/cms_get_coupon_list$', 'api/:version.cms.CmsCoupon/giveCouponListByPage');
+Route::post('api/:version/cms/cms_add_coupon$', 'api/:version.cms.CmsCoupon/addCoupon');
+Route::post('api/:version/cms/cms_upd_coupon$', 'api/:version.cms.CmsCoupon/updCoupon');
+Route::post('api/:version/cms/cms_del_coupon$', 'api/:version.cms.CmsCoupon/delCoupon');
+
 
 /*goods_make*/
 //获取首页信息
