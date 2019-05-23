@@ -89,4 +89,10 @@ Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
 //商品额外信息
-Route::get('api/:version/get_extra_goods_info', 'api/:version.common.Goods/giveExtraGoodsInfo');
+Route::get('api/:version/get_extra_goods_info$', 'api/:version.common.Goods/giveExtraGoodsInfo');
+//登录
+Route::post('api/:version/test_login$', 'api/:version.common.Login/testLogin');
+//领取优惠券
+Route::post('api/:version/user_get_coupon$', 'api/:version.common.Coupon/userGetCoupon');
+//用户获取购物车
+Route::get('api/:version/user_get_cart$','api/:version.common.Cart/userGetCart');

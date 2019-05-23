@@ -2,17 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: administrator_liwy
- * Date: 2019/5/15
- * Time: 15:10
+ * Date: 2019/5/23
+ * Time: 9:27
  */
 
-namespace app\api\service\Token;
+namespace app\api\service\Login;
 
 
 use app\lib\exception\CommonException;
-use think\Cache;
 
-class Token
+class BaseLogin
 {
     /**
      * @return string

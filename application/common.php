@@ -156,7 +156,12 @@ function getRandCharD($length)
     return $str;
 }
 
-/*数组分组*/
+/**
+ * @param $arr
+ * @param $key
+ * @return array
+ * 数组分组
+ */
 function array_group_by($arr, $key)
 {
     $grouped = [];
@@ -172,3 +177,23 @@ function array_group_by($arr, $key)
     }
     return $grouped;
 }
+
+/**
+ * @param $arr
+ * @param $key
+ * @return mixed
+ * 根据键删除数组项
+ */
+function byKeyRemoveArrVal($arr, $key)
+{
+    if (!array_key_exists($key, $arr)) {
+        return $arr;
+    }
+    $keys = array_keys($arr);
+    $index = array_search($key, $keys);
+    if ($index !== FALSE) {
+        array_splice($arr, $index, 1);
+    }
+    return $arr;
+}
+

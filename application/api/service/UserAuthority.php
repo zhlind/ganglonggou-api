@@ -9,11 +9,11 @@
 namespace app\api\service;
 
 
-use app\api\service\Token\Token;
+use app\api\service\Login\BaseLogin;
 use app\lib\exception\CommonException;
 use think\facade\Request;
 
-class UserAuthority
+class UserAuthority extends BaseLogin
 {
     /**
      * @param $code
@@ -24,7 +24,7 @@ class UserAuthority
     public static function checkAuthority($code){
         $request =  Request::instance();
         $admin_token = $request->param("admin_token");
-        $admin_desc = Token::getCurrentIdentity(['admin_id',"admin_action"],$admin_token);
+        $admin_desc = self::getCurrentIdentity(['admin_id',"admin_action"],$admin_token);
 
         if($admin_desc["admin_action"] < $code){
             throw new CommonException(["msg" => "权限不足",'code' => 500]);

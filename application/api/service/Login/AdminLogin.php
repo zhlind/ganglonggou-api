@@ -13,7 +13,7 @@ use app\api\model\GlAdmin;
 use app\api\service\Token\Token;
 use app\lib\exception\CommonException;
 
-class AdminLogin
+class AdminLogin extends BaseLogin
 {
     private $adminName;
     private $adminPassword;
@@ -45,7 +45,7 @@ class AdminLogin
         $admin_info['admin_action'] = $admin_model->admin_action;
 
         //永久保存token
-        $token = Token::saveToCache7Day($admin_info);
+        $token = self::saveToCache7Day($admin_info);
 
         return $token;
 
