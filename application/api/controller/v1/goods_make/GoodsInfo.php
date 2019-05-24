@@ -65,7 +65,7 @@ class GoodsInfo
 
         $goods_id = request()->param('goods_id');
 
-        $result = GlGoods::giveGoodsInfo($goods_id);
+        $result = GlGoods::giveScreenGoodsInfo($goods_id);
 
         return $result;
     }

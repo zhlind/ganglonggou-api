@@ -84,7 +84,7 @@ class GlGoods extends BaseModel
      * @throws \think\exception\DbException
      * 返回筛选过后商品信息
      */
-    public static function giveGoodsInfo($goods_id){
+    public static function giveScreenGoodsInfo($goods_id){
 
         $where['goods_id'] = $goods_id;
         $where['is_on_sale'] = 1;

@@ -103,25 +103,76 @@ class SerCoupon
         $mid_user_coupon = GlMidUserCoupon::where(['user_id' => $user_id,
             'coupon_id' => $coupon_id])
             ->find();
-        if($mid_user_coupon){
+        if ($mid_user_coupon) {
             $result = "您已经领取过这张券啦，抓紧时间去使用吧~~";
             return $result;
-        }else{
+        } else {
             $result = "领券成功";
 
             /*保存中间表,减少优惠券数量*/
             //1.保存中间表
-            GlMidUserCoupon::create(["coupon_id" => $coupon_info -> coupon_id,
+            GlMidUserCoupon::create(["coupon_id" => $coupon_info->coupon_id,
                 "user_id" => $user_id,
                 "get_time" => time(),
                 "is_use" => 0]);
 
             //2.减少优惠券数量
-            GlCoupon::where(["coupon_id" => $coupon_info -> coupon_id])
+            GlCoupon::where(["coupon_id" => $coupon_info->coupon_id])
                 ->setDec('coupon_remainder_number');
 
             return $result;
         }
 
+    }
+
+    /**
+     * @param $user_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 通过用户id返回优惠券列表
+     */
+    public function giveCouponListByUserId($user_id)
+    {
+        $coupon_id_array_ = GlMidUserCoupon::where([['user_id', '=', $user_id]
+            , ['is_use', '=', 0]])
+            ->select()
+            ->toArray();
+        $coupon_id_array = [];
+        $coupon_list = [];
+        if (count($coupon_id_array_) > 0) {
+            foreach ($coupon_id_array_ as $k => $v) {
+                array_push($coupon_id_array, $v['coupon_id']);
+            }
+            $coupon_list = GlCoupon::where([['coupon_id', 'in', $coupon_id_array]
+                , ['is_del', '=', 0]
+                , ['start_use_time', '<', time()]
+                , ['end_use_time', '>', time()]
+            ])
+                ->field('is_del,into_type', true)
+                ->select()
+                ->toArray();
+            if (count($coupon_list) > 0) {
+                foreach ($coupon_list as $k => $v) {
+                    $coupon_list[$k]['coupon_info'] = [];
+                    if ($v['grant_type'] === 'classify') {
+                        foreach ($v['classify'] as $k2 => $v2) {
+                            array_push($coupon_list[$k]['coupon_info'],['cat_id' => $v2]);
+                        }
+                    } elseif ($v['solo'] === 'solo') {
+                        foreach ($v['classify'] as $k2 => $v2) {
+                            array_push($coupon_list[$k]['coupon_info'],['goods_id' => $v2]);
+                        }
+                    }
+                    $coupon_list[$k] = byKeyRemoveArrVal($coupon_list[$k],'classify');
+                    $coupon_list[$k] = byKeyRemoveArrVal($coupon_list[$k],'solo');
+                }
+
+            } else {
+                $coupon_list = [];
+            }
+        }
+        return $coupon_list;
     }
 }

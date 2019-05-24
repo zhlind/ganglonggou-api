@@ -51,4 +51,27 @@ class Goods
         return $result;
 
     }
+
+    /**
+     * @return array
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 通过goodsId获取商品信息
+     */
+    public function giveGoodsInfoByGoodsId(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
+
+        $goods_id = request()->param('goods_id');
+
+        $result = GlGoods::giveScreenGoodsInfo($goods_id);
+
+        return $result;
+
+
+    }
 }

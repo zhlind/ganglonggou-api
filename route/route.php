@@ -88,11 +88,25 @@ Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.
 /*普通*/
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
+//获取商品信息
+Route::get('api/:version/get_goods_info$', 'api/:version.common.Goods/giveGoodsInfoByGoodsId');
 //商品额外信息
 Route::get('api/:version/get_extra_goods_info$', 'api/:version.common.Goods/giveExtraGoodsInfo');
 //登录
 Route::post('api/:version/test_login$', 'api/:version.common.Login/testLogin');
 //领取优惠券
 Route::post('api/:version/user_get_coupon$', 'api/:version.common.Coupon/userGetCoupon');
+//领取优惠券
+Route::get('api/:version/user_get_coupon_list$', 'api/:version.common.Coupon/giveCouponListByUserId');
 //用户获取购物车
-Route::get('api/:version/user_get_cart$','api/:version.common.Cart/userGetCart');
+Route::post('api/:version/user_get_cart$','api/:version.common.Cart/userGetCart');
+//添加地址
+Route::post('api/:version/user_add_address$','api/:version.common.Address/addAddress');
+//添加地址
+Route::post('api/:version/user_upd_address$','api/:version.common.Address/updAddress');
+//获取收货地址
+Route::get('api/:version/user_get_address$','api/:version.common.Address/giveAddress');
+//切换默认收货地址
+Route::post('api/:version/user_upd_default_address$','api/:version.common.Address/updDefaultAddress');
+//删除收货地址
+Route::post('api/:version/user_del_address$','api/:version.common.Address/delAddress');

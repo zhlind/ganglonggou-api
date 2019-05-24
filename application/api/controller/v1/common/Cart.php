@@ -21,9 +21,9 @@ class Cart
 
         $carts = request()->param("carts/a");
 
-        foreach ( $carts as $k => $v){
+       /* foreach ( $carts as $k => $v){
             $carts[$k] = json_decode($v,true);
-        }
+        }    */
 
         $result = [];
 

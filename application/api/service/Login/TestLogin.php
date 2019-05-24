@@ -32,6 +32,11 @@ class TestLogin extends BaseLogin
     /**
      * @return string
      * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      * 返回token
      */
     public function giveToken(){
@@ -44,6 +49,11 @@ class TestLogin extends BaseLogin
     /**
      * @return string
      * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      * 保存用户信息，返回token
      */
     private function getTokenByTestAppIdAndId(){

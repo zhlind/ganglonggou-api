@@ -39,7 +39,7 @@ class AdminLogin extends BaseLogin
 
         $admin_model = GlAdmin::where(['admin_name' => $this->adminName, 'admin_password' => $this->adminPassword])->find();
         if (!$admin_model) {
-            throw  new CommonException(['msg' => '账户或密码错误', 'code' => 500]);
+            throw new CommonException(['msg' => '账户或密码错误', 'code' => 500]);
         }
         $admin_info['admin_id'] = $admin_model->admin_id;
         $admin_info['admin_action'] = $admin_model->admin_action;
