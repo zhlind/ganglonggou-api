@@ -47,7 +47,7 @@ class Pay
         }
 
         foreach ($result as $k => $v){
-            $result[$k]['ByStages'] = GlByStages::where([['pay_code','=',$v['pay_code']]
+            $result[$k]['ByStages'] = GlByStages::where([['pay_id','=',$v['pay_id']]
             ,['is_del','=',0]])
                 ->field('is_del,bystages_planCode',true)
                 ->select();
@@ -55,4 +55,5 @@ class Pay
 
         return $result;
     }
+
 }

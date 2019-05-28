@@ -157,6 +157,24 @@ function getRandCharD($length)
 }
 
 /**
+ * 生成随机字符串全大写,不包含数字
+ */
+function getRandCharDNoNumber($length)
+{
+    $str = null;
+    $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $max = strlen($strPol) - 1;
+
+    for ($i = 0;
+         $i < $length;
+         $i++) {
+        $str .= $strPol[rand(0, $max)];
+    }
+
+    return $str;
+}
+
+/**
  * @param $arr
  * @param $key
  * @return array

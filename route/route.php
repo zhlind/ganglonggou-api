@@ -114,3 +114,5 @@ Route::post('api/:version/user_del_address$','api/:version.common.Address/delAdd
 Route::get('api/:version/user_get_user_info$','api/:version.common.User/giveUserInfoByUserToken');
 //获取支付信息
 Route::get('api/:version/user_get_pay_list$','api/:version.common.Pay/givePayList');
+//提交订单
+Route::post('api/:version/user_submit_order$','api/:version.common.Order/submitOrder');

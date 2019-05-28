@@ -8,19 +8,22 @@
 
 namespace app\api\controller\v1;
 
+use app\api\model\GlCoupon;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
+use app\api\model\Test1;
+use app\api\model\Test2;
 use app\api\service\JsSdk\JsSdk;
 use Naixiaoxin\ThinkWechat\Facade;
 use think\Controller;
+use think\Db;
 use think\facade\Cache;
 
 class Test extends Controller
 {
     public function test()
     {
-        $data = array('name'=>'apple','age'=>12,'address'=>'ChinaGuangZhou');
-        return $this->byKeyrRemoveArrVal($data,'name');
+        echo phpinfo();
     }
 
     /**
@@ -48,8 +51,8 @@ class Test extends Controller
 
         //开始删除重复的sku
         foreach ($del_suk_count as $k => $v) {
-            foreach ($v[0] as $k2=> $v2){
-                GlGoodsSku::where(['goods_id'=>$v['goods_id'], 'sku_id'=>$v2['sku_id']])
+            foreach ($v[0] as $k2 => $v2) {
+                GlGoodsSku::where(['goods_id' => $v['goods_id'], 'sku_id' => $v2['sku_id']])
                     ->delete();
             }
 
@@ -202,15 +205,42 @@ class Test extends Controller
      * @return mixed
      * 根据键删除数组项
      */
-    private function byKeyrRemoveArrVal($arr, $key){
-        if(!array_key_exists($key, $arr)){
+    private function byKeyrRemoveArrVal($arr, $key)
+    {
+        if (!array_key_exists($key, $arr)) {
             return $arr;
         }
         $keys = array_keys($arr);
         $index = array_search($key, $keys);
-        if($index !== FALSE){
+        if ($index !== FALSE) {
             array_splice($arr, $index, 1);
         }
         return $arr;
+    }
+
+    /**
+     * @return bool
+     * 事务测试
+     */
+    private function testDb(){
+
+        Db::transaction(function () {
+
+            $data1['zd1'] = 1;
+            $data1['zd2'] = 1;
+            $data1['zd3'] = 1;
+            $data1['zd4'] = 1;
+
+            Test1::create($data1);
+
+            $data2['zd1'] = 1;
+            $data2['zd2'] = 1;
+            $data2['zd3'] = 1;
+
+            Test2::create($data2);
+
+        });
+        return true;
+
     }
 }
