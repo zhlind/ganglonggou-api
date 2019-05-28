@@ -77,6 +77,8 @@ class TestLogin extends BaseLogin
                 'user_img' => "head_portrait.png",
                 'add_time' => time(),
                 'login_time' => time(),
+                'integral' => 0,
+                'is_del' => 0,
                 'test_openid' => $this->testOpenid
             ];
             $user_id = GlUser::create($data)->id;

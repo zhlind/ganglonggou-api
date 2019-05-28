@@ -153,23 +153,7 @@ class SerCoupon
                 ->field('is_del,into_type', true)
                 ->select()
                 ->toArray();
-            if (count($coupon_list) > 0) {
-                foreach ($coupon_list as $k => $v) {
-                    $coupon_list[$k]['coupon_info'] = [];
-                    if ($v['grant_type'] === 'classify') {
-                        foreach ($v['classify'] as $k2 => $v2) {
-                            array_push($coupon_list[$k]['coupon_info'],['cat_id' => $v2]);
-                        }
-                    } elseif ($v['solo'] === 'solo') {
-                        foreach ($v['classify'] as $k2 => $v2) {
-                            array_push($coupon_list[$k]['coupon_info'],['goods_id' => $v2]);
-                        }
-                    }
-                    $coupon_list[$k] = byKeyRemoveArrVal($coupon_list[$k],'classify');
-                    $coupon_list[$k] = byKeyRemoveArrVal($coupon_list[$k],'solo');
-                }
-
-            } else {
+            if (count($coupon_list) === 0) {
                 $coupon_list = [];
             }
         }

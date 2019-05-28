@@ -17,6 +17,14 @@ class SerCart
     private $skuInfo;
     private $goodsInfo;
 
+    /**
+     * @param $cart_info
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 检查购物车
+     */
     public function checkCartInfo($cart_info)
     {
         $result = [];
@@ -37,10 +45,12 @@ class SerCart
             $result["goods_number"] = $cart_info["goods_number"];//所选商品数量
             $result["goods_stock"] = $this->skuInfo ->sku_stock;
             $result["attr_desc"] = $this->skuInfo ->sku_desc;
-            $result["give_integral"] = $this->skuInfo ->give_integral;
-            $result["integral"] = $this->skuInfo ->integral;
+            $result["one_give_integral"] = $this->skuInfo ->give_integral;
+            $result["one_integral"] = $this->skuInfo ->integral;
             $result["one_goods_price"] = $this->skuInfo ->sku_shop_price;
             $result["goods_price"] = sprintf("%01.2f",$this->skuInfo ->sku_shop_price * $cart_info["goods_number"]);
+            $result["give_integral"] = $this->skuInfo ->give_integral * $cart_info["goods_number"];
+            $result["integral"] =$this->skuInfo ->integral * $cart_info["goods_number"];
         }else{
             $result = $cart_info;
             $result["goods_attr"] = [];

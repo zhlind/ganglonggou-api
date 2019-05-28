@@ -110,3 +110,7 @@ Route::get('api/:version/user_get_address$','api/:version.common.Address/giveAdd
 Route::post('api/:version/user_upd_default_address$','api/:version.common.Address/updDefaultAddress');
 //删除收货地址
 Route::post('api/:version/user_del_address$','api/:version.common.Address/delAddress');
+//获取用户信息
+Route::get('api/:version/user_get_user_info$','api/:version.common.User/giveUserInfoByUserToken');
+//获取支付信息
+Route::get('api/:version/user_get_pay_list$','api/:version.common.Pay/givePayList');

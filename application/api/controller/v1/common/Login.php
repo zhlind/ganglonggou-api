@@ -17,6 +17,11 @@ class Login
     /**
      * @return string
      * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      * 测试登录
      */
     public function testLogin(){
