@@ -86,9 +86,9 @@ class CmsGoods
         $data['promote_end_date'] = request()->param('promote_end_date');
         $data['keywords'] = request()->param('keywords');
         $data['goods_brief'] = request()->param('goods_brief');
-        $data['goods_desc'] = $this->removeImgUrl(request()->param('goods_desc'));
-        $data['goods_img'] = $this->removeImgUrl(request()->param('goods_img'));
-        $data['original_img'] = $this->removeImgUrl(request()->param('original_img'));
+        $data['goods_desc'] = removeImgUrl(request()->param('goods_desc'));
+        $data['goods_img'] = removeImgUrl(request()->param('goods_img'));
+        $data['original_img'] = removeImgUrl(request()->param('original_img'));
         $data['is_on_sale'] = request()->param('is_on_sale');
         $data['add_time'] = time();
         $data['sort_order'] = 99;
@@ -117,8 +117,8 @@ class CmsGoods
             //生成商品相册
             foreach ($goods_gallery_array as $k => $v) {
                 $data_goods_gallery['goods_id'] = $goods_info->id;
-                $data_goods_gallery['img_url'] = $this->removeImgUrl($v['url']);
-                $data_goods_gallery['img_original'] = $this->removeImgUrl($v['original_url']);
+                $data_goods_gallery['img_url'] = removeImgUrl($v['url']);
+                $data_goods_gallery['img_original'] = removeImgUrl($v['original_url']);
                 GlGoodsGallery::create($data_goods_gallery);
             }
             //生成sku
@@ -130,8 +130,8 @@ class CmsGoods
                 $data_goods_sku['sku_market_price'] = $v['sku_market_price'];
                 $data_goods_sku['give_integral'] = $v['give_integral'];
                 $data_goods_sku['integral'] = $v['integral'];
-                $data_goods_sku['img_url'] = $this->removeImgUrl($v['img_url']);
-                $data_goods_sku['original_img_url'] = $this->removeImgUrl($v['original_img_url']);
+                $data_goods_sku['img_url'] = removeImgUrl($v['img_url']);
+                $data_goods_sku['original_img_url'] = removeImgUrl($v['original_img_url']);
                 GlGoodsSku::create($data_goods_sku);
             }
             //生成货号
@@ -201,9 +201,9 @@ class CmsGoods
                         $goods_info['attribute'] = $attribute;
                         $goods_info['add_time'] = time();
                         $goods_info['upd_time'] = time();
-                        $goods_info['goods_img'] = $this->removeImgUrl($v2['goods_img']);
-                        $goods_info['original_img'] = $this->removeImgUrl($v2['original_img']);
-                        $goods_info['goods_desc'] = $this->removeImgUrl($v2['goods_desc']);
+                        $goods_info['goods_img'] = removeImgUrl($v2['goods_img']);
+                        $goods_info['original_img'] = removeImgUrl($v2['original_img']);
+                        $goods_info['goods_desc'] = removeImgUrl($v2['goods_desc']);
                         $add_goods_info = GlGoods::create($goods_info);
 
                         //生成货号
@@ -220,8 +220,8 @@ class CmsGoods
                                 $sku_info = $this->byKeyRemoveArrVal($sku_info,'img_url');
                                 $sku_info = $this->byKeyRemoveArrVal($sku_info,'original_img_url');
                                 $sku_info['goods_id'] = $add_goods_info->id;
-                                $sku_info['img_url'] = $this->removeImgUrl($sku_v['img_url']);
-                                $sku_info['original_img_url'] = $this->removeImgUrl($sku_v['original_img_url']);
+                                $sku_info['img_url'] = removeImgUrl($sku_v['img_url']);
+                                $sku_info['original_img_url'] = removeImgUrl($sku_v['original_img_url']);
                                 GlGoodsSku::create($sku_info);
                             }
                         }
@@ -236,8 +236,8 @@ class CmsGoods
                                 $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_url');
                                 $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_original');
                                 $gallery_info['goods_id'] = $add_goods_info->id;
-                                $gallery_info['img_url'] = $this->removeImgUrl($gallery_v['img_url']);
-                                $gallery_info['img_original'] = $this->removeImgUrl($gallery_v['img_original']);
+                                $gallery_info['img_url'] = removeImgUrl($gallery_v['img_url']);
+                                $gallery_info['img_original'] = removeImgUrl($gallery_v['img_original']);
                                 GlGoodsGallery::create($gallery_info);
                             }
                         }
@@ -312,9 +312,9 @@ class CmsGoods
         $data['promote_end_date'] = request()->param('promote_end_date');
         $data['keywords'] = request()->param('keywords');
         $data['goods_brief'] = request()->param('goods_brief');
-        $data['goods_desc'] = $this->removeImgUrl(request()->param('goods_desc'));
-        $data['goods_img'] = $this->removeImgUrl(request()->param('goods_img'));
-        $data['original_img'] = $this->removeImgUrl(request()->param('original_img'));
+        $data['goods_desc'] = removeImgUrl(request()->param('goods_desc'));
+        $data['goods_img'] = removeImgUrl(request()->param('goods_img'));
+        $data['original_img'] = removeImgUrl(request()->param('original_img'));
         $data['is_on_sale'] = request()->param('is_on_sale');
         $data['sort_order'] = 99;
         $data['is_del'] = 0;
@@ -345,8 +345,8 @@ class CmsGoods
             //生成商品相册
             foreach ($goods_gallery_array as $k => $v) {
                 $data_goods_gallery['goods_id'] = $data2['goods_id'];
-                $data_goods_gallery['img_url'] = $this->removeImgUrl($v['url']);
-                $data_goods_gallery['img_original'] = $this->removeImgUrl($v['original_url']);
+                $data_goods_gallery['img_url'] = removeImgUrl($v['url']);
+                $data_goods_gallery['img_original'] = removeImgUrl($v['original_url']);
                 GlGoodsGallery::create($data_goods_gallery);
             }
             //生成sku
@@ -358,8 +358,8 @@ class CmsGoods
                 $data_goods_sku['sku_market_price'] = $v['sku_market_price'];
                 $data_goods_sku['give_integral'] = $v['give_integral'];
                 $data_goods_sku['integral'] = $v['integral'];
-                $data_goods_sku['img_url'] = $this->removeImgUrl($v['img_url']);
-                $data_goods_sku['original_img_url'] = $this->removeImgUrl($v['original_img_url']);
+                $data_goods_sku['img_url'] = removeImgUrl($v['img_url']);
+                $data_goods_sku['original_img_url'] = removeImgUrl($v['original_img_url']);
                 GlGoodsSku::create($data_goods_sku);
             }
 

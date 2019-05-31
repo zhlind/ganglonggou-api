@@ -215,3 +215,36 @@ function byKeyRemoveArrVal($arr, $key)
     return $arr;
 }
 
+/**
+ * @param $file
+ * @return mixed
+ *去除图片中的url
+ */
+function removeImgUrl($file)
+{
+
+    if (strpos($file, config('my_config.img_url')) >= 0) {
+
+        return str_replace(config('my_config.img_url'), '', $file);
+
+    } else {
+        return $file;
+    }
+
+}
+
+/**
+ * @param $arr
+ * @param $key
+ * @return mixed
+ * 根据值是否为NUll删除数组项
+ */
+function byValIsNullRemoveArrVal($arr)
+{
+    foreach ($arr as $k => $v) {
+        if($v == null){
+            byKeyRemoveArrVal($arr,$k);
+        }
+    }
+}
+

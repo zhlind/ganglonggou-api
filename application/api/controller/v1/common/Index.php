@@ -35,6 +35,12 @@ class Index
             case 'abc':
                 $parent_id = 154;
                 break;
+            case '3c618mobile':
+                $parent_id = 0;
+                break;
+            case '3c618pc':
+                $parent_id = 0;
+                break;
             default:
                 throw new CommonException(['msg' => '无此入口']);
         }

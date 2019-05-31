@@ -19,12 +19,29 @@ class CmsIndexAd
     {
 
         //验证必要
+        (new CurrencyValidate())->myGoCheck(['into_type','page', 'limit'], 'require');
+        UserAuthority::checkAuthority(8);
+        $where['into_type'] = request()->param('into_type');
+        $data['page'] = request()->param('page');
+        $data['limit'] = request()->param('limit');
+        $result['list'] = GlIndexAd::where($where)
+            ->page($data['page'],$data['limit'])
+            ->order(['position_type','sort_order'=>'desc'])
+            ->select();
+        $result['count'] = GlIndexAd::where($where)->count();
+
+        return $result;
+
+    }
+    public function giveAllIndexAdList()
+    {
+
+        //验证必要
         (new CurrencyValidate())->myGoCheck(['into_type'], 'require');
         UserAuthority::checkAuthority(8);
         $where['into_type'] = request()->param('into_type');
 
-        $result['list'] = GlIndexAd::where($where)->order(['position_type','sort_order'=>'desc'])->select();
-        $result['count'] = GlIndexAd::where($where)->count();
+        $result = GlIndexAd::where($where)->order(['position_type','sort_order'=>'desc'])->select();
 
         return $result;
 
@@ -44,7 +61,15 @@ class CmsIndexAd
         $data['position_type'] = request()->param('position_type');
         $data['ad_type'] = request()->param('ad_type');
         $data['sort_order'] = request()->param('sort_order');
-        $data['ad_img'] = $this->removeImgUrl(request()->param('ad_img'));
+        $data['ad_img'] = removeImgUrl(request()->param('ad_img'));
+        $data['position_type_name'] = request()->param('position_type_name');
+        $data['father_position_name'] = request()->param('father_position_name');
+        $data['position_type2'] = request()->param('position_type2');
+        $data['goods_name'] = request()->param('goods_name');
+        $data['goods_price'] = request()->param('goods_price');
+        $data['origin_goods_price'] = request()->param('origin_goods_price');
+        $data['url'] = request()->param('url');
+
         //第二次验证
         if ($data['ad_type'] === '商品ID') {
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
@@ -76,7 +101,14 @@ class CmsIndexAd
         $data['position_type'] = request()->param('position_type');
         $data['ad_type'] = request()->param('ad_type');
         $data['sort_order'] = request()->param('sort_order');
-        $data['ad_img'] = $this->removeImgUrl(request()->param('ad_img'));
+        $data['ad_img'] = removeImgUrl(request()->param('ad_img'));
+        $data['position_type_name'] = request()->param('position_type_name');
+        $data['father_position_name'] = request()->param('father_position_name');
+        $data['position_type2'] = request()->param('position_type2');
+        $data['goods_name'] = request()->param('goods_name');
+        $data['goods_price'] = request()->param('goods_price');
+        $data['origin_goods_price'] = request()->param('origin_goods_price');
+        $data['url'] = request()->param('url');
         //第二次验证
         if ($data['ad_type'] === '商品ID') {
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');

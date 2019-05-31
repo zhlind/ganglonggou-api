@@ -14,12 +14,15 @@ use app\api\model\GlByStages;
 use app\api\model\GlCoupon;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
+use app\api\model\GlMidOrder;
 use app\api\model\GlMidUserCoupon;
 use app\api\model\GlOrder;
+use app\api\model\GlOrderInvoice;
 use app\api\model\GlPayType;
 use app\api\model\GlUser;
 use app\api\service\Login\BaseLogin;
 use app\lib\exception\CommonException;
+use think\Db;
 
 class SerOrder
 {
@@ -45,6 +48,14 @@ class SerOrder
     protected $addressInfo;//地址信息
     protected $invoiceInfo;//发票信息
 
+    /**
+     * @return mixed
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 生成订单
+     */
     public function createOrder()
     {
         $user_token = request()->param("user_token");
@@ -112,7 +123,7 @@ class SerOrder
                 ->find();
 
             if (!$mid_user_coupon) {
-                throw new CommonException(['无效优惠券']);
+                throw new CommonException(['msg'=>'无效优惠券']);
             }
 
             $this->couponInfo = GlCoupon::where([
@@ -195,7 +206,10 @@ class SerOrder
         /*生成订单编号*/
         $this->createOrderSn();
 
-        return $this;
+        /*保存数据库*/
+        $this->orderInfoSaveDb();
+
+        return $this->orderSn;
     }
 
 
@@ -223,7 +237,7 @@ class SerOrder
     {
 
         /*先检查订单总金额是否满足优惠券使用门槛*/
-        if (($this->couponInfo['found_sum'] + 0) < ($this->originalOrderPrice + 0)) {
+        if (($this->couponInfo['found_sum'] + 0) > ($this->originalOrderPrice + 0)) {
             throw new CommonException(['msg' => '无效优惠券']);
         }
         /*检查商品列表中商品是否满足优惠券使用条件*/
@@ -260,8 +274,9 @@ class SerOrder
         $give_integral = 0;
 
         foreach ($this->skuInfoArray as $skuInfoArray_k => $skuInfoArray_v) {
-            $allow_integral_number += $skuInfoArray_v['integral'];
-            $give_integral += $skuInfoArray_v['give_integral'];
+            $allow_integral_number += $skuInfoArray_v['integral'] * $this->submitGoodsArray[$skuInfoArray_k]['goods_number'];
+
+            $give_integral += $skuInfoArray_v['give_integral'] * $this->submitGoodsArray[$skuInfoArray_k]['goods_number'];
         }
 
         if ($allow_integral_number < $this->useIntegralNumber) {
@@ -314,8 +329,84 @@ class SerOrder
 
     }
 
-    private function OrderInfoSaveDb()
+    /**
+     * 保存数据库
+     */
+    private function orderInfoSaveDb()
     {
+        //删除数组中为null的项
+        byValIsNullRemoveArrVal($this->invoiceInfo);
 
+        Db::transaction(function () {
+            /*保存订单主表*/
+            GlOrder::create([
+                'order_sn' => $this->orderSn,
+                'user_id' => $this->userInfo['user_id'],
+                'user_name' => $this->userInfo['user_name'],
+                'order_state' => 1,
+                'prev_order_state' => 1,
+                'into_type' => $this->intoType,
+                'son_into_type' => $this->sonIntoType,
+                'son_into_type_name' => config('my_config.son_into_type_name')[$this->sonIntoType],
+                'original_order_price' => $this->originalOrderPrice,
+                'after_using_coupon_price' => $this->afterUsingCouponPrice,
+                'after_using_integral_price' => $this->afterUsingIntegralPrice,
+                'after_using_pay_price' => $this->afterUsingPayPrice,
+                'order_price' => $this->orderPrice,
+                'give_integral' => $this->giveIntegral,
+                'bystages_id' => $this->byStagesInfo['bystages_id'],
+                'pay_id' => $this->payTypeInfo['pay_id'],
+                'pay_code' => $this->payTypeInfo['pay_code'],
+                'pay_name' => $this->payTypeInfo['pay_name'],
+                'bystages_val' => $this->byStagesInfo['bystages_val'],
+                'create_time' => time(),//创建日期
+                'upd_time' => time(),//修改日期
+                'invalid_pay_time' => time() + config('my_config.invalid_pay_time'),//订单支付超时时间
+                'is_del' => 0,
+                'logistics_name' => $this->addressInfo['name'],
+                'logistics_tel' => $this->addressInfo['tel'],
+                'logistics_address' => $this->addressInfo['province'] . $this->addressInfo['city'] . $this->addressInfo['county'] . $this->addressInfo['address_detail'],
+                'logistics_code' => 'shunfeng',//快递方式代码，暂时写死
+            ]);
+
+            /*保存订单中间表*/
+            foreach ($this->submitGoodsArray as $submitGoodsArray_k => $submitGoodsArray_v) {
+                GlMidOrder::create([
+                    'order_sn' => $this->orderSn,
+                    'goods_id' => $this->goodsInfoArray[$submitGoodsArray_k]['goods_id'],
+                    'goods_name' => $this->goodsInfoArray[$submitGoodsArray_k]['goods_name'],
+                    'sku_id' => $this->skuInfoArray[$submitGoodsArray_k]['sku_id'],
+                    'sku_desc' => $this->skuInfoArray[$submitGoodsArray_k]['sku_desc'],
+                    'goods_number' => $submitGoodsArray_v['goods_number'],
+                    'mid_order_price' => $this->skuInfoArray[$submitGoodsArray_k]['sku_shop_price'] * $submitGoodsArray_v['goods_number'],
+                    'give_integral' => $this->skuInfoArray[$submitGoodsArray_k]['give_integral'] * $submitGoodsArray_v['goods_number'],
+                    'is_evaluate' => 0,
+                    'img_url' => removeImgUrl($this->skuInfoArray[$submitGoodsArray_k]['img_url']),
+                ]);
+            };
+
+            /*保存发票表*/
+            $this->invoiceInfo['order_sn'] = $this->orderSn;
+            GlOrderInvoice::create($this->invoiceInfo);
+
+            /*如果使用了优惠券,就改为已使用*/
+            if ($this->couponInfo) {
+                GlMidUserCoupon::where([
+                    ['user_id', '=', $this->userInfo['user_id']],
+                    ['coupon_id', '=', $this->couponInfo['coupon_id']]
+                ])
+                    ->update([
+                        'is_use' => 1,
+                        'use_time' => time()
+                    ]);
+            }
+
+            /*扣除积分*/
+            GlUser::where([
+                ['user_id', '=', $this->userInfo['user_id']]
+            ])
+                ->setDec('integral', ($this->useIntegralNumber + 0));
+
+        });
     }
 }

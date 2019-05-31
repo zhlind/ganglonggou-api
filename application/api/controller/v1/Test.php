@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 use app\api\model\GlCoupon;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
+use app\api\model\GlIndexAd;
 use app\api\model\Test1;
 use app\api\model\Test2;
 use app\api\service\JsSdk\JsSdk;
@@ -23,7 +24,19 @@ class Test extends Controller
 {
     public function test()
     {
-        echo phpinfo();
+        $ad_array = GlIndexAd::where(['into_type' =>'3c618mobile'])
+            ->select()
+            ->toArray();
+
+        foreach ($ad_array as $k => $v){
+            $data = $v;
+            $data = $this->byKeyrRemoveArrVal($data,'id');
+            $data = $this->byKeyrRemoveArrVal($data,'into_type');
+            $data['ad_img'] = removeImgUrl($v['ad_img']);
+            $data['into_type'] = '3c618pc';
+            GlIndexAd::create($data);
+        }
+        return $ad_array;
     }
 
     /**
@@ -105,8 +118,8 @@ class Test extends Controller
                     $data['goods_id'] = $goods_info['goods_id'];
                     $data['give_integral'] = 0;
                     $data['integral'] = 0;
-                    $data['img_url'] = $this->removeImgUrl($sku_info[0]['img_url']);
-                    $data['original_img_url'] = $this->removeImgUrl($sku_info[0]['original_img_url']);
+                    $data['img_url'] = removeImgUrl($sku_info[0]['img_url']);
+                    $data['original_img_url'] = removeImgUrl($sku_info[0]['original_img_url']);
                     $data['sku_desc'] = $value2;
                     GlGoodsSku::create($data);
                     $count++;
@@ -139,24 +152,6 @@ class Test extends Controller
             }
         }
         return $result;
-    }
-
-    /**
-     * @param $file
-     * @return string
-     * 去除图片中的url
-     */
-    private function removeImgUrl($file)
-    {
-
-        if (strpos($file, config('my_config.img_url')) >= 0) {
-
-            return str_replace(config('my_config.img_url'), '', $file);
-
-        } else {
-            return $file;
-        }
-
     }
 
 

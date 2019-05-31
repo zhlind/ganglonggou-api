@@ -59,6 +59,7 @@ Route::post('api/:version/cms/cms_upload_goods_img$', 'api/:version.upload.Uploa
 Route::rule('api/:version/cms/cms_upload_goods_img$', 'api/:version.Option/returnTrue','OPTIONS');
 //获取广告列表
 Route::get('api/:version/cms/cms_get_index_ad_list$', 'api/:version.cms.CmsIndexAd/giveIndexAdList');
+Route::get('api/:version/cms/cms_get_all_ad$', 'api/:version.cms.CmsIndexAd/giveAllIndexAdList');
 //编辑广告
 Route::post('api/:version/cms/cms_add_index_ad$', 'api/:version.cms.CmsIndexAd/addIndexAd');
 Route::post('api/:version/cms/cms_upd_index_ad$', 'api/:version.cms.CmsIndexAd/updIndexAd');
@@ -116,3 +117,5 @@ Route::get('api/:version/user_get_user_info$','api/:version.common.User/giveUser
 Route::get('api/:version/user_get_pay_list$','api/:version.common.Pay/givePayList');
 //提交订单
 Route::post('api/:version/user_submit_order$','api/:version.common.Order/submitOrder');
+//获取订单信息
+Route::get('api/:version/user_get_one_order_info','api/:version.common.Order/giveOrderInfo');
