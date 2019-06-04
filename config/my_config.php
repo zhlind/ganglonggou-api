@@ -14,6 +14,8 @@ return [
     'img_file' => dirname(\think\facade\Env::get('root_path')) . '/images/',
     //图片服务器Url
     'img_url' => _GL_CONFIG_['img_url'],
+    //apiUrl
+    'api_url' => _GL_CONFIG_['api_url'],
     //日志文件
     'log_file' => dirname(\think\facade\Env::get('root_path')) . '/runtime/log/',
     //缓存文件

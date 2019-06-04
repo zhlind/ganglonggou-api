@@ -37,20 +37,19 @@ class CmsGoods
         UserAuthority::checkAuthority(8);
         $data['page'] = request()->param('page');
         $data['limit'] = request()->param('limit');
-        $where['is_del'] = 0;
+        $where = [['is_del', '=', 0]];
         if (request()->param('goods_name') !== '') {
-            $where['goods_name'] = request()->param('goods_name');
+            array_push($where, ['goods_name', 'like', '%' . request()->param('goods_name') . '%']);
         }
         if (request()->param('cat_id') !== '') {
-            $where['cat_id'] = request()->param('cat_id');
+            array_push($where, ['cat_id', '=', request()->param('cat_id')]);
         }
         /*        $where['goods_name'] = request()->param('goods_name') !== '' ? request()->param('goods_name') : array('exp', Db::raw('is not null'));
                 $where['cat_id'] = request()->param('cat_id') !== '' ? request()->param('cat_id') : array('exp', Db::raw('is not null'));*/
         $result['list'] = GlGoods::where($where)
             ->page($data['page'], $data['limit'])
             ->order('goods_id desc')
-            ->select()
-            ->toArray();
+            ->select();
 
         $result['count'] = GlGoods::where($where)
             ->count();
@@ -188,7 +187,7 @@ class CmsGoods
                     foreach ($goods_array as $k2 => $v2) {
                         //复制商品
                         $goods_id = $v2['goods_id'];
-                        $attribute = json_encode($v2['attribute'],true);
+                        $attribute = json_encode($v2['attribute'], true);
                         $goods_info = $this->byKeyRemoveArrVal($v2, 'goods_id');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'cat_id');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'goods_img');
@@ -214,11 +213,11 @@ class CmsGoods
                             ->select()
                             ->toArray();
                         if (count($sku_array) > 0) {
-                            foreach ($sku_array as $sku_k => $sku_v){
-                                $sku_info = $this->byKeyRemoveArrVal($sku_v,'goods_id');
-                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'sku_id');
-                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'img_url');
-                                $sku_info = $this->byKeyRemoveArrVal($sku_info,'original_img_url');
+                            foreach ($sku_array as $sku_k => $sku_v) {
+                                $sku_info = $this->byKeyRemoveArrVal($sku_v, 'goods_id');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info, 'sku_id');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info, 'img_url');
+                                $sku_info = $this->byKeyRemoveArrVal($sku_info, 'original_img_url');
                                 $sku_info['goods_id'] = $add_goods_info->id;
                                 $sku_info['img_url'] = removeImgUrl($sku_v['img_url']);
                                 $sku_info['original_img_url'] = removeImgUrl($sku_v['original_img_url']);
@@ -230,11 +229,11 @@ class CmsGoods
                             ->select()
                             ->toArray();
                         if (count($gallery_array) > 0) {
-                            foreach ($gallery_array as $gallery_k => $gallery_v){
-                                $gallery_info = $this->byKeyRemoveArrVal($gallery_v,'goods_id');
-                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'goods_gallery_id');
-                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_url');
-                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info,'img_original');
+                            foreach ($gallery_array as $gallery_k => $gallery_v) {
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_v, 'goods_id');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info, 'goods_gallery_id');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info, 'img_url');
+                                $gallery_info = $this->byKeyRemoveArrVal($gallery_info, 'img_original');
                                 $gallery_info['goods_id'] = $add_goods_info->id;
                                 $gallery_info['img_url'] = removeImgUrl($gallery_v['img_url']);
                                 $gallery_info['img_original'] = removeImgUrl($gallery_v['img_original']);

@@ -14,8 +14,20 @@ use think\facade\Route;
 /*测试*/
 Route::get('api/:version/test$', 'api/:version.Test/test');
 
+/*发送邮件*/
+Route::post('api/:version/send_email$', 'api/:version.Email/sandEmail');
+
 /*微信分享*/
 Route::get('api/:version/goods_make/get_WxJsSdk', 'api/:version.WxShare/giveWxShareInfo');
+
+
+/*支付回调*/
+//微信公众号支付回调
+Route::any('api/:version/notify/wx_js_api_notify$','api/:version.notify.PayNotify/wxJSAPIPayNotify');
+//农行支付回调
+Route::any('api/:version/notify/abc_notify$','api/:version.notify.PayNotify/abcPayNotify');
+//中行支付回调
+Route::any('api/:version/notify/boc_notify$','api/:version.notify.PayNotify/bocPayNotify');
 
 
 /*百度ueditor*/
@@ -73,6 +85,8 @@ Route::get('api/:version/cms/cms_get_coupon_list$', 'api/:version.cms.CmsCoupon/
 Route::post('api/:version/cms/cms_add_coupon$', 'api/:version.cms.CmsCoupon/addCoupon');
 Route::post('api/:version/cms/cms_upd_coupon$', 'api/:version.cms.CmsCoupon/updCoupon');
 Route::post('api/:version/cms/cms_del_coupon$', 'api/:version.cms.CmsCoupon/delCoupon');
+//订单
+Route::get('api/:version/cms/cms_get_order_list$', 'api/:version.cms.CmsOrder/giveOrderListByPage');
 
 
 /*goods_make*/
@@ -118,4 +132,6 @@ Route::get('api/:version/user_get_pay_list$','api/:version.common.Pay/givePayLis
 //提交订单
 Route::post('api/:version/user_submit_order$','api/:version.common.Order/submitOrder');
 //获取订单信息
-Route::get('api/:version/user_get_one_order_info','api/:version.common.Order/giveOrderInfo');
+Route::get('api/:version/user_get_one_order_info$','api/:version.common.Order/giveOrderInfo');
+//订单支付
+Route::get('api/:version/payment/user_order_payment$','api/:version.common.Pay/OrderPayment');

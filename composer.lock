@@ -4,8 +4,43 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f70296d5ca411d8ea2e9c6ee37b19939",
+    "content-hash": "69de81295870e9e58390e091d5203876",
     "packages": [
+        {
+            "name": "hassankhan/config",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hassankhan/config.git",
+                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/d30cdc72d37a592e856e9f1b62e29a03b049d785",
+                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8 || ~5.7 || ~6.5 || ~7.5",
+                "scrutinizer/ocular": "~1.1",
+                "squizlabs/php_codesniffer": "~2.2",
+                "symfony/yaml": "~3.4"
+            },
+            "suggest": {
+                "symfony/yaml": "~3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Noodlehaus\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2019-04-06T17:34:30+00:00"
+        },
         {
             "name": "swiftmailer/swiftmailer",
             "version": "5.x-dev",
@@ -248,7 +283,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "yuan1994/tp-mailer": 20,
-        "topthink/think-image": 20
+        "topthink/think-image": 20,
+        "hassankhan/config": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

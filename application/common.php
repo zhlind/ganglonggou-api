@@ -58,7 +58,6 @@ function wx_curl_get($url)
 /*发送一个post请求*/
 function send_post($url, $post_data)
 {
-
     $postdata = http_build_query($post_data);
     $options = array(
         'http' => array(

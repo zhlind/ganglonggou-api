@@ -12,6 +12,7 @@ namespace app\api\controller\v1\common;
 use app\api\model\GlByStages;
 use app\api\model\GlPayType;
 use app\api\service\Login\BaseLogin;
+use app\api\service\OrderPayment\Payment;
 use app\api\validate\CurrencyValidate;
 use app\lib\exception\CommonException;
 
@@ -54,6 +55,29 @@ class Pay
         }
 
         return $result;
+    }
+
+    /**
+     * @return \app\api\service\OrderPayment\AbcPayment
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 订单支付
+     */
+    public function OrderPayment(){
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['order_sn', 'user_token','success_url','back_url'], 'require');
+
+        $PaymentClass = new Payment();
+        $PaymentClass->userToken = request()->param('user_token');
+        $PaymentClass->orderSn = request()->param('order_sn');
+        $PaymentClass->successUrl = request()->param('success_url');
+        $PaymentClass->backUrl = request()->param('back_url');
+
+        return $PaymentClass->orderPayment();
+
     }
 
 }

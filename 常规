@@ -19,9 +19,3 @@ sprintf("%01.2f",$price);
 \think\facade\Env::get('root_path');
 //json配置文件目录
  $json_file = dirname(\think\facade\Env::get('root_path')) . '/config/ganglonggou.json';
-
-
-$user_token = $request->param("user_token");
-$user_desc = Token::getCurrentIdentity(['user_id','login_type'],$user_token);
-$data['user_id'] = $user_desc['user_id'];
-$data['login_type'] = $user_desc["login_type"];

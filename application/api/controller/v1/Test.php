@@ -8,35 +8,76 @@
 
 namespace app\api\controller\v1;
 
-use app\api\model\GlCoupon;
+
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
 use app\api\model\GlIndexAd;
 use app\api\model\Test1;
 use app\api\model\Test2;
-use app\api\service\JsSdk\JsSdk;
-use Naixiaoxin\ThinkWechat\Facade;
+use app\api\service\SerEmail;
+use Noodlehaus\Config;
 use think\Controller;
 use think\Db;
-use think\facade\Cache;
 
 class Test extends Controller
 {
     public function test()
     {
-        $ad_array = GlIndexAd::where(['into_type' =>'3c618mobile'])
-            ->select()
-            ->toArray();
 
-        foreach ($ad_array as $k => $v){
-            $data = $v;
-            $data = $this->byKeyrRemoveArrVal($data,'id');
-            $data = $this->byKeyrRemoveArrVal($data,'into_type');
-            $data['ad_img'] = removeImgUrl($v['ad_img']);
-            $data['into_type'] = '3c618pc';
-            GlIndexAd::create($data);
-        }
-        return $ad_array;
+
+    }
+
+
+
+    private function sendEmailTest(){
+
+        $head = '测试';
+        $body = '测试';
+        $address_array = ['987303897@qq.com','582870246@qq.com'];
+
+        (new SerEmail())->sendEmail($head,$body,$address_array);
+
+        return true;
+
+    }
+
+    protected function iniTest()
+    {
+        $conf = Config::load('C:\Users\administrator_liwy\Desktop\web\API\ganglonggou-api\main\application\api\controller\v1\test.ini');
+
+        $conf['MerchantKeyStoreType'] = '1';
+
+        return $conf->get('MerchantKeyStoreType');
+    }
+
+    private function returnHtmlTest()
+    {
+
+        $goods_list['g1'] = GlIndexAd::where([
+            'into_type' => '3c618pc',
+            'position_type' => '券享最惠，品悦好物-商品',
+        ])
+            ->order(['position_type', 'sort_order' => 'desc'])
+            ->select();
+        $goods_list['g2'] = GlIndexAd::where([
+            'into_type' => '3c618pc',
+            'position_type' => '手机数码专区',
+            'position_type2' => '内容',
+        ])
+            ->order(['position_type', 'sort_order' => 'desc'])
+            ->select();
+        $goods_list['g3'] = GlIndexAd::where([
+            'into_type' => '3c618pc',
+            'position_type' => '电脑办公专区',
+            'position_type2' => '内容',
+        ])
+            ->order(['position_type', 'sort_order' => 'desc'])
+            ->select();
+
+        $test = view('/3cPc')->assign('goods_list', $goods_list);
+
+        return $test;
+
     }
 
     /**
@@ -217,7 +258,8 @@ class Test extends Controller
      * @return bool
      * 事务测试
      */
-    private function testDb(){
+    private function testDb()
+    {
 
         Db::transaction(function () {
 
