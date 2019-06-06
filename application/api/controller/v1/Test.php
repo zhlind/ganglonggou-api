@@ -23,7 +23,7 @@ class Test extends Controller
 {
     public function test()
     {
-
+        return $this->sendEmailTest();
 
     }
 
@@ -32,12 +32,27 @@ class Test extends Controller
     private function sendEmailTest(){
 
         $head = '测试';
-        $body = '测试';
+        $email_body = '用户支付成功:';
+        $v['goods_name'] = 'asdasdsa';
+        $v['goods_id'] = 'asdasdsa';
+        $v['goods_number'] = 10;
+        $v['sku_id'] = 'asdasdsa';
+        $v['sku_desc'] = 'asdasdsa';
+        $sku_info['sku_stock'] = 10;
+        $email_body .= '
+            (商品名称:' . $v['goods_name'] .
+            ',商品id:' . $v['goods_id'] .
+            ',购买数量:' . $v['goods_number'] .
+            ',SkuId:' . $v['sku_id'] .
+            ',属性详情:' . $v['sku_desc'] .
+            ',剩余库存:' .($sku_info['sku_stock'] - $v['goods_number']) .
+            ',库存检测结果:库存充足)';
+
         $address_array = ['987303897@qq.com','582870246@qq.com'];
 
-        (new SerEmail())->sendEmail($head,$body,$address_array);
+        (new SerEmail())->sendEmail($head,$email_body,$address_array);
 
-        return true;
+        return $email_body;
 
     }
 

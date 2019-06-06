@@ -9,19 +9,23 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+$json_file = dirname(dirname(__DIR__)) . '/config/ganglonggou.json';
+$json_str = file_get_contents($json_file);
+$json_array = json_decode($json_str, true);
+
 return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => _GL_CONFIG_['mysql']['hostname'],
+    'hostname'        => $json_array['mysql']['hostname'],
     // 数据库名
-    'database'        => _GL_CONFIG_['mysql']['database'],
+    'database'        => $json_array['mysql']['database'],
     // 用户名
-    'username'        => _GL_CONFIG_['mysql']['username'],
+    'username'        => $json_array['mysql']['username'],
     // 密码
-    'password'        => _GL_CONFIG_['mysql']['password'],
+    'password'        => $json_array['mysql']['password'],
     // 端口
-    'hostport'        => _GL_CONFIG_['mysql']['hostport'],
+    'hostport'        => $json_array['mysql']['hostport'],
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
@@ -31,7 +35,7 @@ return [
     // 数据库表前缀
     'prefix'          => '',
     // 数据库调试模式
-    'debug'           =>  _GL_CONFIG_['debug'],
+    'debug'           =>  $json_array['debug'],
     // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
     'deploy'          => 0,
     // 数据库读写是否分离 主从式有效

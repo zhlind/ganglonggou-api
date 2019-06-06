@@ -69,15 +69,15 @@ class Order
             ->update([
                 'upd_time' => time(),
                 'order_state' => 0,
-                'prev_order_state'=>1,
+                'prev_order_state' => 1,
                 'order_visible_note' => '超出支付时间，订单自动取消'
             ]);
 
         /*获取订单信息*/
-        $order_info = GlOrder::getScreenOrderInfoByOrderSnAndUserId($order_sn,$user_id);
+        $order_info = GlOrder::getScreenOrderInfoByOrderSnAndUserId($order_sn, $user_id);
 
-        if(!$order_info){
-            throw new CommonException(['msg'=>'无效订单']);
+        if (!$order_info) {
+            throw new CommonException(['msg' => '无效订单']);
         }
 
         /*订单中间表*/
@@ -89,5 +89,154 @@ class Order
         return $order_info;
 
 
+    }
+
+    /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 返回用户所以订单
+     */
+    public function giveAllOrderByUserId()
+    {
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['user_token'], 'require');
+
+        //获取用户信息
+        $user_token = request()->param("user_token");
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
+        $user_id = $user_desc['user_id'];
+
+        $order_list = GlOrder::where([
+            ['user_id', '=', $user_id],
+            ['is_del', '=', 0]
+        ])
+            ->field('order_sn,order_state,upd_time')
+            ->select();
+
+        if (count($order_list) > 0) {
+            foreach ($order_list as $k => $v) {
+                $order_list[$k]['order_state_name'] = config('my_config.order_state_name')[$v['order_state']];
+                $order_list[$k]['mid_order'] = GlMidOrder::where([
+                    ['order_sn', '=', $v['order_sn']]
+                ])
+                    ->field('goods_name,sku_desc,goods_number,give_integral,is_evaluate,img_url,mid_order_price,id')
+                    ->select();
+            }
+        }
+
+        return $order_list;
+
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 订单签收
+     */
+    public function takeOrderByOrderSn(){
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+
+        $order_sn = request()->param("order_sn");
+        //获取用户信息
+        $user_token = request()->param("user_token");
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
+        $user_id = $user_desc['user_id'];
+
+        $upd_number = GlOrder::where([
+            ['order_sn','=',$order_sn],
+            ['user_id','=',$user_id],
+            ['order_state','=',3],
+            ['is_del','=',0]
+        ])->update([
+            'order_state'=>4,
+            'upd_time'=>time(),
+            'invalid_sign_goods_time'=>time(),
+            'prev_order_state'=>3,
+        ]);
+
+        if($upd_number < 1){
+            throw new CommonException(['msg'=>'签收失败']);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 删除订单
+     */
+    public function delOrderByOrderSn(){
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+
+        $order_sn = request()->param("order_sn");
+        //获取用户信息
+        $user_token = request()->param("user_token");
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
+        $user_id = $user_desc['user_id'];
+
+        $upd_number = GlOrder::where([
+            ['order_sn','=',$order_sn],
+            ['user_id','=',$user_id],
+            ['order_state','=',0],
+            ['is_del','=',0]
+        ])->update([
+            'is_del'=>1,
+            'upd_time'=>time(),
+        ]);
+
+        if($upd_number < 1){
+            throw new CommonException(['msg'=>'删除失败']);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 取消订单
+     */
+    public function callOrderByOrderSn(){
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+
+        $order_sn = request()->param("order_sn");
+        //获取用户信息
+        $user_token = request()->param("user_token");
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
+        $user_id = $user_desc['user_id'];
+
+        $upd_number = GlOrder::where([
+            ['order_sn','=',$order_sn],
+            ['user_id','=',$user_id],
+            ['order_state','=',1],
+            ['is_del','=',0]
+        ])->update([
+            'order_state'=>0,
+            'upd_time'=>time(),
+            'prev_order_state'=>1,
+        ]);
+
+        if($upd_number < 1){
+            throw new CommonException(['msg'=>'取消失败']);
+        }
+
+        return true;
     }
 }

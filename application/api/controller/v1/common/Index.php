@@ -47,6 +47,7 @@ class Index
 
         $result['ad_list'] = GlIndexAd::where(['into_type'=>$into_type])
             ->order(['position_type','sort_order'=>'desc'])
+            ->cache('index_ad_list')
             ->select();
 
         $result['cat_list'] = GlCategory::where(['parent_id'=>$parent_id])

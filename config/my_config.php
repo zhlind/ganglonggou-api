@@ -6,22 +6,26 @@
  * Time: 13:12
  */
 
-/*//读取配置文件
-$json_file = dirname(\think\facade\Env::get('root_path')) . '/config/ganglonggou.json';
-$json_array = json_decode(file_get_contents($json_file), true);*/
+
+$json_file = dirname(dirname(__DIR__)) . '/config/ganglonggou.json';
+$json_str = file_get_contents($json_file);
+$json_array = json_decode($json_str, true);
+
 return [
+    //debug
+    'debug' => $json_array['debug'],
     //图片存放地址
     'img_file' => dirname(\think\facade\Env::get('root_path')) . '/images/',
     //图片服务器Url
-    'img_url' => _GL_CONFIG_['img_url'],
+    'img_url' => $json_array['img_url'],
     //apiUrl
-    'api_url' => _GL_CONFIG_['api_url'],
+    'api_url' => $json_array['api_url'],
     //日志文件
     'log_file' => dirname(\think\facade\Env::get('root_path')) . '/runtime/log/',
     //缓存文件
     'cache_file' => dirname(\think\facade\Env::get('root_path')) . '/runtime/cache/',
     //token盐巴
-    'token_salt' => _GL_CONFIG_['token_salt'],
+    'token_salt' => $json_array['token_salt'],
     //Token到期时间
     'token_expire_in' => 70000,
     //Token到期时间(七天)
@@ -29,11 +33,13 @@ return [
     //wx各种缓存到期时间
     'wx_expire_in' => 6000,
     //wxAppId
-    'wx_app_id' => _GL_CONFIG_['wx_app_id'],
+    'wx_app_id' => $json_array['wx_app_id'],
     //WxSecret
-    'wx_secret' => _GL_CONFIG_['wx_secret'],
+    'wx_secret' => $json_array['wx_secret'],
     //订单支付超时时间
     'invalid_pay_time' => 43200,
+    //签收超时时间
+    'invalid_sign_goods_time' => 604800,
     //子入口对应名称
     'son_into_type_name' => array(
         'abc_wx' => '农行微信端',
@@ -45,10 +51,13 @@ return [
         1 => '未支付',
         2 => '等待商家发货',
         3 => '待签收',
-        4 => '待评价',
+        4 => '交易成功',
         5 => '已评价',
         6 => '申请售后中',
         7 => '售后失败',
         8 => '售后成功',
     ),
+    'logistics_code_name' => array(
+        'shunfeng' => '顺丰速递',
+    )
 ];

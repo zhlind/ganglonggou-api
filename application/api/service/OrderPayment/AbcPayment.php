@@ -215,7 +215,7 @@ class AbcPayment
     {
 
         require($this->file . 'QueryOrderRequest.php');
-        require($this->file . 'core/Json.php');
+        //require($this->file . 'core/Json.php');
 
         $tRequest = new \QueryOrderRequest();
 

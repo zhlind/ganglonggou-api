@@ -9,7 +9,7 @@
 namespace app\api\service\OrderPayment;
 
 
-use app\api\controller\v1\common\Goods;
+
 use app\api\model\GlByStages;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
@@ -251,19 +251,21 @@ class Payment
                     ])->find();
                     if ($sku_info['sku_stock'] >= $v['goods_number']) {
                         /*库存满足*/
-                        $email_body .= '\r\n(商品名称:' . $v['goods_name'] .
+                        $email_body .= '
+                        (商品名称:' . $v['goods_name'] .
                             ',商品id:' . $v['goods_id'] .
                             ',购买数量:' . $v['goods_number'] .
                             ',SkuId:' . $v['sku_id'] .
                             ',属性详情:' . $v['sku_desc'] .
-                            ',剩余库存:' . $sku_info['sku_stock'] - $v['goods_number'] .
+                            ',剩余库存:' .($sku_info['sku_stock'] - $v['goods_number']).
                             ',库存检测结果:库存充足)';
                         /*减去对应库存*/
                         GlGoodsSku::where(['sku_id' => $v['sku_id']])->setDec('sku_stock', ($v['goods_number'] + 0));
                         GlGoods::where(['goods_id' => $v['goods_id']])->setDec('goods_stock', ($v['goods_number'] + 0));
                     } else {
                         /*库存不满足*/
-                        $email_body .= '\r\n(商品名称:' . $v['goods_name'] .
+                        $email_body .= '
+                        (商品名称:' . $v['goods_name'] .
                             ',商品id:' . $v['goods_id'] .
                             ',购买数量:' . $v['goods_number'] .
                             ',SkuId:' . $v['sku_id'] .
@@ -325,13 +327,14 @@ class Payment
             /*发送邮件*/
             //测试用
 
-            if (_GL_CONFIG_['debug']) {
+            if (!config('my_config.debug')) {
                 //正式用
                 $address_array = [
                     '987303897@qq.com',
                     '3001374619@qq.com',
                     '3001397358@qq.com',
                     '3001306821@qq.com',
+                    '3004391423@qq.com',
                     '811718475@qq.com'
                 ];
             } else {
@@ -362,13 +365,14 @@ class Payment
 
         $head = '订单退款成功提醒';
         $body = '订单退款成功,订单号：' . $this->orderSn;
-        if (_GL_CONFIG_['debug']) {
+        if (!config('my_config.debug')) {
             //正式用
             $address_array = [
                 '987303897@qq.com',
                 '3001374619@qq.com',
                 '3001397358@qq.com',
                 '3001306821@qq.com',
+                '3004391423@qq.com',
                 '811718475@qq.com'
             ];
         } else {

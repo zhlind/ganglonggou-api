@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: administrator_liwy
- * Date: 2019/6/4
- * Time: 15:00
+ * Date: 2019/6/5
+ * Time: 15:10
  */
 
-namespace app\api\notify;
+namespace app\api\controller\v1\notify;
 
 
 use app\api\service\OrderPayment\AbcPayment;

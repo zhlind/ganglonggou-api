@@ -488,24 +488,6 @@ class CmsGoods
 
     }
 
-    /**
-     * @param $file
-     * @return string
-     * 去除图片中的url
-     */
-    private function removeImgUrl($file)
-    {
-
-        if (strpos($file, config('my_config.img_url')) >= 0) {
-
-            return str_replace(config('my_config.img_url'), '', $file);
-
-        } else {
-            return $file;
-        }
-
-    }
-
 
     /**
      * @param $goods_sku_array

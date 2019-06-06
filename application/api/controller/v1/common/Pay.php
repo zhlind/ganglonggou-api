@@ -58,7 +58,6 @@ class Pay
     }
 
     /**
-     * @return \app\api\service\OrderPayment\AbcPayment
      * @throws CommonException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

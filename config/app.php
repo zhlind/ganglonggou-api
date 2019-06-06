@@ -13,13 +13,17 @@
 // | 应用设置
 // +----------------------------------------------------------------------
 
+$json_file = dirname(dirname(__DIR__)) . '/config/ganglonggou.json';
+$json_str = file_get_contents($json_file);
+$json_array = json_decode($json_str, true);
+
 return [
     // 应用名称
     'app_name'               => '',
     // 应用地址
     'app_host'               => '',
     // 应用调试模式
-    'app_debug'              => _GL_CONFIG_['debug'],
+    'app_debug'              => $json_array['debug'],
     // 应用Trace
     'app_trace'              => false,
     // 是否支持多模块
@@ -123,7 +127,7 @@ return [
     // 全局请求缓存排除规则
     'request_cache_except'   => [],
     // 是否开启路由缓存
-    'route_check_cache'      => false,
+    'route_check_cache'      => !$json_array['debug'],
     // 路由缓存的Key自定义设置（闭包），默认为当前URL和请求类型的md5
     'route_check_cache_key'  => '',
     // 路由缓存类型及参数

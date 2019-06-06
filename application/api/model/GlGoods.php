@@ -40,7 +40,7 @@ class GlGoods extends BaseModel
 
     /**
      * @param $parent_id
-     * @return array
+     * @return mixed
      * @throws CommonException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

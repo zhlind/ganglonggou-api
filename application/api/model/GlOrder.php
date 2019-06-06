@@ -54,6 +54,15 @@ class GlOrder extends BaseModel
         }
     }
 
+    public function getInvalidSignGoodsTimeAttr($value, $data)
+    {
+        if ($value != null) {
+            return date("Y-m-d H:i:s", $value);
+        } else {
+            return $value;
+        }
+    }
+
     public function getSignGoodsTimeAttr($value, $data)
     {
         if ($value != null) {
@@ -84,6 +93,7 @@ class GlOrder extends BaseModel
             ->find();
         if ($order_info) {
             $order_info['order_state_name'] = config('my_config.order_state_name')[$order_info['order_state']];
+            $order_info['logistics_code_name'] = config('my_config.logistics_code_name')[$order_info['logistics_code']];
         }
         return $order_info;
 

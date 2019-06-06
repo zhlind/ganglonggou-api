@@ -23,17 +23,17 @@ Route::get('api/:version/goods_make/get_WxJsSdk', 'api/:version.WxShare/giveWxSh
 
 /*支付回调*/
 //微信公众号支付回调
-Route::any('api/:version/notify/wx_js_api_notify$','api/:version.notify.PayNotify/wxJSAPIPayNotify');
+Route::any('api/:version/notify/wx_js_api_notify$', 'api/:version.notify.PayNotify/wxJSAPIPayNotify');
 //农行支付回调
-Route::any('api/:version/notify/abc_notify$','api/:version.notify.PayNotify/abcPayNotify');
+Route::any('api/:version/notify/abc_notify$', 'api/:version.notify.PayNotify/abcPayNotify');
 //中行支付回调
-Route::any('api/:version/notify/boc_notify$','api/:version.notify.PayNotify/bocPayNotify');
+Route::any('api/:version/notify/boc_notify$', 'api/:version.notify.PayNotify/bocPayNotify');
 
 
 /*百度ueditor*/
 Route::get('api/:version/ueditor_file_upload$', 'api/:version.ueditor.Ueditor/ueditorFileUpload');
 Route::post('api/:version/ueditor_file_upload$', 'api/:version.ueditor.Ueditor/ueditorFileUpload');
-Route::rule('api/:version/ueditor_file_upload$', 'api/:version.Option/returnTrue','OPTIONS');
+Route::rule('api/:version/ueditor_file_upload$', 'api/:version.Option/returnTrue', 'OPTIONS');
 
 /*cms*/
 //登录
@@ -68,7 +68,7 @@ Route::post('api/:version/cms/cms_upd_cat$', 'api/:version.cms.CmsCat/updCat');
 Route::post('api/:version/cms/cms_del_cat$', 'api/:version.cms.CmsCat/delCat');
 //图片上传
 Route::post('api/:version/cms/cms_upload_goods_img$', 'api/:version.upload.Upload/ImgUpload');
-Route::rule('api/:version/cms/cms_upload_goods_img$', 'api/:version.Option/returnTrue','OPTIONS');
+Route::rule('api/:version/cms/cms_upload_goods_img$', 'api/:version.Option/returnTrue', 'OPTIONS');
 //获取广告列表
 Route::get('api/:version/cms/cms_get_index_ad_list$', 'api/:version.cms.CmsIndexAd/giveIndexAdList');
 Route::get('api/:version/cms/cms_get_all_ad$', 'api/:version.cms.CmsIndexAd/giveAllIndexAdList');
@@ -87,7 +87,13 @@ Route::post('api/:version/cms/cms_upd_coupon$', 'api/:version.cms.CmsCoupon/updC
 Route::post('api/:version/cms/cms_del_coupon$', 'api/:version.cms.CmsCoupon/delCoupon');
 //订单
 Route::get('api/:version/cms/cms_get_order_list$', 'api/:version.cms.CmsOrder/giveOrderListByPage');
-
+Route::get('api/:version/cms/cms_get_extra_order_info$', 'api/:version.cms.CmsOrder/extraOrderInfoByOrderSn');
+Route::get('api/:version/cms/cms_pay_query$', 'api/:version.cms.CmsOrder/OrderPaymentQuery');
+Route::post('api/:version/cms/cms_call_order$', 'api/:version.cms.CmsOrder/callOrderByOrderSn');
+Route::post('api/:version/cms/cms_del_order$', 'api/:version.cms.CmsOrder/delOrderByOrderSn');
+//物流
+Route::post('api/:version/cms/cms_upd_logistics$', 'api/:version.cms.CmsOrder/updOrderLogisticsInfoByOrderSn');
+Route::post('api/:version/cms/cms_delivery_order$', 'api/:version.cms.CmsOrder/deliveryByOrderSn');
 
 /*goods_make*/
 //获取首页信息
@@ -114,24 +120,39 @@ Route::post('api/:version/user_get_coupon$', 'api/:version.common.Coupon/userGet
 //领取优惠券
 Route::get('api/:version/user_get_coupon_list$', 'api/:version.common.Coupon/giveCouponListByUserId');
 //用户获取购物车
-Route::post('api/:version/user_get_cart$','api/:version.common.Cart/userGetCart');
+Route::post('api/:version/user_get_cart$', 'api/:version.common.Cart/userGetCart');
 //添加地址
-Route::post('api/:version/user_add_address$','api/:version.common.Address/addAddress');
+Route::post('api/:version/user_add_address$', 'api/:version.common.Address/addAddress');
 //添加地址
-Route::post('api/:version/user_upd_address$','api/:version.common.Address/updAddress');
+Route::post('api/:version/user_upd_address$', 'api/:version.common.Address/updAddress');
 //获取收货地址
-Route::get('api/:version/user_get_address$','api/:version.common.Address/giveAddress');
+Route::get('api/:version/user_get_address$', 'api/:version.common.Address/giveAddress');
 //切换默认收货地址
-Route::post('api/:version/user_upd_default_address$','api/:version.common.Address/updDefaultAddress');
+Route::post('api/:version/user_upd_default_address$', 'api/:version.common.Address/updDefaultAddress');
 //删除收货地址
-Route::post('api/:version/user_del_address$','api/:version.common.Address/delAddress');
+Route::post('api/:version/user_del_address$', 'api/:version.common.Address/delAddress');
 //获取用户信息
-Route::get('api/:version/user_get_user_info$','api/:version.common.User/giveUserInfoByUserToken');
+Route::get('api/:version/user_get_user_info$', 'api/:version.common.User/giveUserInfoByUserToken');
+//更换头像
+Route::post('api/:version/user_upd_portrait$', 'api/:version.common.User/userUpdPortrait');
+Route::rule('api/:version/cms/user_upd_portrait$', 'api/:version.Option/returnTrue', 'OPTIONS');
+//修改用户信息
+Route::post('api/:version/user_upd_info$', 'api/:version.common.User/updUserInfoByUserId');
 //获取支付信息
-Route::get('api/:version/user_get_pay_list$','api/:version.common.Pay/givePayList');
+Route::get('api/:version/user_get_pay_list$', 'api/:version.common.Pay/givePayList');
 //提交订单
-Route::post('api/:version/user_submit_order$','api/:version.common.Order/submitOrder');
+Route::post('api/:version/user_submit_order$', 'api/:version.common.Order/submitOrder');
 //获取订单信息
-Route::get('api/:version/user_get_one_order_info$','api/:version.common.Order/giveOrderInfo');
+Route::get('api/:version/user_get_one_order_info$', 'api/:version.common.Order/giveOrderInfo');
 //订单支付
-Route::get('api/:version/payment/user_order_payment$','api/:version.common.Pay/OrderPayment');
+Route::get('api/:version/payment/user_order_payment$', 'api/:version.common.Pay/OrderPayment');
+//获取所有订单
+Route::get('api/:version/user_get_all_order$', 'api/:version.common.Order/giveAllOrderByUserId');
+//取消订单
+Route::post('api/:version/user_call_order$', 'api/:version.common.Order/callOrderByOrderSn');
+//删除订单
+Route::post('api/:version/user_del_order$', 'api/:version.common.Order/delOrderByOrderSn');
+//签收订单
+Route::post('api/:version/user_take_order$', 'api/:version.common.Order/takeOrderByOrderSn');
+//提交评价
+Route::post('api/:version/user_ins_evaluate$', 'api/:version.common.Evaluate/insEvaluate');

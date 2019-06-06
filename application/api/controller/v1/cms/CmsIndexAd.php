@@ -19,20 +19,22 @@ class CmsIndexAd
     {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['into_type','page', 'limit'], 'require');
+        (new CurrencyValidate())->myGoCheck(['into_type', 'page', 'limit'], 'require');
         UserAuthority::checkAuthority(8);
         $where['into_type'] = request()->param('into_type');
         $data['page'] = request()->param('page');
         $data['limit'] = request()->param('limit');
         $result['list'] = GlIndexAd::where($where)
-            ->page($data['page'],$data['limit'])
-            ->order(['position_type','sort_order'=>'desc'])
+            ->page($data['page'], $data['limit'])
+            ->order(['position_type', 'sort_order' => 'desc'])
+            ->cache($where['into_type'] .'index_ad_list')
             ->select();
         $result['count'] = GlIndexAd::where($where)->count();
 
         return $result;
 
     }
+
     public function giveAllIndexAdList()
     {
 
@@ -41,7 +43,9 @@ class CmsIndexAd
         UserAuthority::checkAuthority(8);
         $where['into_type'] = request()->param('into_type');
 
-        $result = GlIndexAd::where($where)->order(['position_type','sort_order'=>'desc'])->select();
+        $result = GlIndexAd::where($where)->order(['position_type', 'sort_order' => 'desc'])
+            ->cache($where['into_type'].'index_ad_list')
+            ->select();
 
         return $result;
 
@@ -55,7 +59,7 @@ class CmsIndexAd
     public function addIndexAd()
     {
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['into_type', 'position_type', 'ad_type','sort_order'], 'require');
+        (new CurrencyValidate())->myGoCheck(['into_type', 'position_type', 'ad_type', 'sort_order'], 'require');
         (new CurrencyValidate())->myGoCheck(['sort_order'], 'positiveInt');
         $data['into_type'] = request()->param('into_type');
         $data['position_type'] = request()->param('position_type');
@@ -77,7 +81,7 @@ class CmsIndexAd
             $data['goods_id'] = request()->param('goods_id');
         }
 
-        GlIndexAd::create($data);
+        GlIndexAd::create('index_ad_list');
 
         return true;
     }
@@ -89,11 +93,12 @@ class CmsIndexAd
      * @throws \think\exception\PDOException
      * 编辑广告
      */
-    public function updIndexAd(){
+    public function updIndexAd()
+    {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['into_type', 'position_type', 'ad_type','sort_order','id'], 'require');
-        (new CurrencyValidate())->myGoCheck(['sort_order','id'], 'positiveInt');
+        (new CurrencyValidate())->myGoCheck(['into_type', 'position_type', 'ad_type', 'sort_order', 'id'], 'require');
+        (new CurrencyValidate())->myGoCheck(['sort_order', 'id'], 'positiveInt');
         UserAuthority::checkAuthority(8);
 
         $where['id'] = request()->param('id');
@@ -131,7 +136,8 @@ class CmsIndexAd
      * @throws \think\exception\PDOException
      * 删除广告
      */
-    public function delIndexAd(){
+    public function delIndexAd()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['id'], 'require');
         (new CurrencyValidate())->myGoCheck(['id'], 'positiveInt');
