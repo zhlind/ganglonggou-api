@@ -10,6 +10,7 @@ namespace app\api\controller\v1\common;
 
 
 use app\api\model\GlGoods;
+use app\api\model\GlGoodsEvaluate;
 use app\api\model\GlGoodsGallery;
 use app\api\model\GlGoodsSku;
 use app\api\service\SerCoupon;

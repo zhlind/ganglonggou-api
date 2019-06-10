@@ -91,6 +91,32 @@ class CmsOrder
     }
 
     /**
+     * @return array|\PDOStatement|string|\think\Model|null
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 返回订单信息
+     */
+    public function giveOrderInfo()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['order_sn'], 'require');
+        UserAuthority::checkAuthority(8);
+
+        $order_sn = request()->param('order_sn');
+
+        $result = GlOrder::where([
+            ['order_sn', '=', $order_sn],
+            ['is_del', '=', 0]
+        ])
+            ->find();
+
+
+        return $result;
+    }
+
+    /**
      * @return mixed
      * @throws \app\lib\exception\CommonException
      * @throws \think\db\exception\DataNotFoundException

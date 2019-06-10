@@ -9,6 +9,7 @@
 namespace app\api\controller\v1\common;
 
 
+use app\api\model\GlGoodsEvaluate;
 use app\api\service\Login\BaseLogin;
 use app\api\service\SerEvaluate;
 use app\api\validate\CurrencyValidate;
@@ -57,6 +58,30 @@ class Evaluate
         $EvaluateClass->rate = $rate;
 
         return $EvaluateClass->userInsEvaluate();
+
+    }
+
+    public function giveEvaluateListByGoodsIdAndPage()
+    {
+
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['page', 'limit', 'goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['page', 'limit', 'goods_id'], 'positiveInt');
+        $goods_id = request()->param('goods_id');
+        $page = request()->param('page');
+        $limit = request()->param('limit');
+
+        $result = GlGoodsEvaluate::where([
+            ['goods_id', '=', $goods_id],
+            ['is_del', '=', 0],
+            ['is_allow', '=', 1],
+        ])
+            ->page($page, $limit)
+            ->field('create_time,parent_id,user_name,user_img,goods_name,sku_desc,rate,evaluate_text,id')
+            ->select();
+
+        return $result;
 
     }
 }

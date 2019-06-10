@@ -87,6 +87,7 @@ Route::post('api/:version/cms/cms_upd_coupon$', 'api/:version.cms.CmsCoupon/updC
 Route::post('api/:version/cms/cms_del_coupon$', 'api/:version.cms.CmsCoupon/delCoupon');
 //订单
 Route::get('api/:version/cms/cms_get_order_list$', 'api/:version.cms.CmsOrder/giveOrderListByPage');
+Route::get('api/:version/cms/cms_get_order_info$', 'api/:version.cms.CmsOrder/giveOrderInfo');
 Route::get('api/:version/cms/cms_get_extra_order_info$', 'api/:version.cms.CmsOrder/extraOrderInfoByOrderSn');
 Route::get('api/:version/cms/cms_pay_query$', 'api/:version.cms.CmsOrder/OrderPaymentQuery');
 Route::post('api/:version/cms/cms_call_order$', 'api/:version.cms.CmsOrder/callOrderByOrderSn');
@@ -94,6 +95,18 @@ Route::post('api/:version/cms/cms_del_order$', 'api/:version.cms.CmsOrder/delOrd
 //物流
 Route::post('api/:version/cms/cms_upd_logistics$', 'api/:version.cms.CmsOrder/updOrderLogisticsInfoByOrderSn');
 Route::post('api/:version/cms/cms_delivery_order$', 'api/:version.cms.CmsOrder/deliveryByOrderSn');
+/*售后*/
+Route::get('api/:version/cms/cms_get_after_sale_list$', 'api/:version.cms.CmsAfterSale/giveAfterSaleListByPage');
+Route::post('api/:version/cms/cms_order_refund$', 'api/:version.cms.CmsAfterSale/OrderRefund');
+/*评价*/
+Route::get('api/:version/cms/cms_get_evaluate_list$', 'api/:version.cms.CmsEvaluate/giveEvaluateList');
+Route::post('api/:version/cms/cms_allow_evaluate$', 'api/:version.cms.CmsEvaluate/allowEvaluate');
+Route::post('api/:version/cms/cms_del_evaluate$', 'api/:version.cms.CmsEvaluate/delEvaluate');
+
+
+
+
+
 
 /*goods_make*/
 //获取首页信息
@@ -106,6 +119,9 @@ Route::get('api/:version/goods_make/get_goods_info$', 'api/:version.goods_make.G
 Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.MakeOrder/addOrder');
 
 
+
+
+
 /*普通*/
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
@@ -113,6 +129,8 @@ Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexI
 Route::get('api/:version/get_goods_info$', 'api/:version.common.Goods/giveGoodsInfoByGoodsId');
 //商品额外信息
 Route::get('api/:version/get_extra_goods_info$', 'api/:version.common.Goods/giveExtraGoodsInfo');
+//商品评价
+Route::get('api/:version/user_get_evaluate_by_goods_id_and_page$', 'api/:version.common.Evaluate/giveEvaluateListByGoodsIdAndPage');
 //登录
 Route::post('api/:version/test_login$', 'api/:version.common.Login/testLogin');
 //领取优惠券
@@ -156,3 +174,7 @@ Route::post('api/:version/user_del_order$', 'api/:version.common.Order/delOrderB
 Route::post('api/:version/user_take_order$', 'api/:version.common.Order/takeOrderByOrderSn');
 //提交评价
 Route::post('api/:version/user_ins_evaluate$', 'api/:version.common.Evaluate/insEvaluate');
+//提交售后
+Route::post('api/:version/user_submit_after_sale$', 'api/:version.common.AfterSale/submitAfterSale');
+//取消售后
+Route::post('api/:version/user_call_after_sale$', 'api/:version.common.AfterSale/callAfterSale');

@@ -9,7 +9,6 @@
 namespace app\api\service\OrderPayment;
 
 
-
 use app\api\model\GlByStages;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
@@ -168,17 +167,17 @@ class Payment
         ])
             ->find();
 
-        if(!$this->orderInfo){
-            throw new CommonException(['msg'=>'无此订单']);
+        if (!$this->orderInfo) {
+            throw new CommonException(['msg' => '无此订单']);
         }
 
         //发起查询
-        if ($this->orderInfo['pay_code'] === "AbcPayment"){
+        if ($this->orderInfo['pay_code'] === "AbcPayment") {
             $PayClass = new AbcPayment();
-        }elseif ($this->orderInfo['pay_code'] === "AbcEPayment"){
+        } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
-        }else{
-            throw new CommonException(["msg"=>"该支付方式支付查询功能暂未开放"]);
+        } else {
+            throw new CommonException(["msg" => "该支付方式支付查询功能暂未开放"]);
         }
 
         return $PayClass->startQuery($this->orderInfo);
@@ -195,24 +194,25 @@ class Payment
      * @throws \think\exception\PDOException
      * 订单退款
      */
-    public function orderPayRefund(){
+    public function orderPayRefund()
+    {
 
         $this->orderInfo = GlOrder::where([
             ['order_sn', '=', $this->orderSn]
         ])
             ->find();
 
-        if(!$this->orderInfo){
-            throw new CommonException(['msg'=>'无此订单']);
+        if (!$this->orderInfo) {
+            throw new CommonException(['msg' => '无此订单']);
         }
 
         //发起退款
-        if ($this->orderInfo['pay_code'] === "AbcPayment"){
+        if ($this->orderInfo['pay_code'] === "AbcPayment") {
             $PayClass = new AbcPayment();
-        }elseif ($this->orderInfo['pay_code'] === "AbcEPayment"){
+        } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
-        }else{
-            throw new CommonException(["msg"=>"该支付方式支付退款功能暂未开放"]);
+        } else {
+            throw new CommonException(["msg" => "该支付方式支付退款功能暂未开放"]);
         }
 
         return $PayClass->startRefund($this->orderInfo);
@@ -257,7 +257,7 @@ class Payment
                             ',购买数量:' . $v['goods_number'] .
                             ',SkuId:' . $v['sku_id'] .
                             ',属性详情:' . $v['sku_desc'] .
-                            ',剩余库存:' .($sku_info['sku_stock'] - $v['goods_number']).
+                            ',剩余库存:' . ($sku_info['sku_stock'] - $v['goods_number']) .
                             ',库存检测结果:库存充足)';
                         /*减去对应库存*/
                         GlGoodsSku::where(['sku_id' => $v['sku_id']])->setDec('sku_stock', ($v['goods_number'] + 0));
@@ -397,7 +397,9 @@ class Payment
         GlOrder::where([
             ['order_sn', '=', $order_sn]
         ])
-            ->update('refund_order_sn', $refund_order_sn);
+            ->update([
+                'refund_order_sn' => $refund_order_sn
+            ]);
 
         return $refund_order_sn;
 

@@ -85,7 +85,7 @@ class BaseLogin
         // $identities = cache($token);
 
         if (!$identities) {
-            throw new CommonException(['msg'=>'获取用户信息失败','code'=>'500']);
+            throw new CommonException(['msg'=>'获取用户信息失败','code'=>'400','error_code'=>10002]);
         } else {
             if (!is_array($identities)) {
                 $identities = json_decode($identities, true);

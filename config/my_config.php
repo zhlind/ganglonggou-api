@@ -59,5 +59,7 @@ return [
     ),
     'logistics_code_name' => array(
         'shunfeng' => '顺丰速递',
-    )
+    ),
+    /*sql查询默认缓存时间，24小时*/
+    'sql_sel_cache_time' => 86400,
 ];

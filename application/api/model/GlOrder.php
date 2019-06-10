@@ -72,6 +72,14 @@ class GlOrder extends BaseModel
         }
     }
 
+    public function getRefundTimeAttr($value, $data)
+    {
+        if ($value != null) {
+            return date("Y-m-d H:i:s", $value);
+        } else {
+            return $value;
+        }
+    }
 
     public static function getOrderInfoByOrderSn($order_sn)
     {

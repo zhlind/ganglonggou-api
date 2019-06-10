@@ -12,6 +12,7 @@ namespace app\api\controller\v1\cms;
 use app\api\model\GlIndexAd;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
+use think\facade\Cache;
 
 class CmsIndexAd
 {
@@ -27,7 +28,6 @@ class CmsIndexAd
         $result['list'] = GlIndexAd::where($where)
             ->page($data['page'], $data['limit'])
             ->order(['position_type', 'sort_order' => 'desc'])
-            ->cache($where['into_type'] .'index_ad_list')
             ->select();
         $result['count'] = GlIndexAd::where($where)->count();
 
@@ -44,7 +44,6 @@ class CmsIndexAd
         $where['into_type'] = request()->param('into_type');
 
         $result = GlIndexAd::where($where)->order(['position_type', 'sort_order' => 'desc'])
-            ->cache($where['into_type'].'index_ad_list')
             ->select();
 
         return $result;
@@ -81,7 +80,7 @@ class CmsIndexAd
             $data['goods_id'] = request()->param('goods_id');
         }
 
-        GlIndexAd::create('index_ad_list');
+        GlIndexAd::create($data);
 
         return true;
     }
