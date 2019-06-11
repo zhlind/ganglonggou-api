@@ -62,4 +62,9 @@ return [
     ),
     /*sql查询默认缓存时间，24小时*/
     'sql_sel_cache_time' => 86400,
+    /*农行Id*/
+    'lbAppId' => $json_array['lbAppId'],
+    'bdAppId' => $json_array['bdAppId'],
+    'lbAppKey' => $json_array['lbAppKey'],
+    'bdAppKey' => $json_array['bdAppKey'],
 ];

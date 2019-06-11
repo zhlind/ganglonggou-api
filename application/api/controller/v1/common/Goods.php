@@ -15,6 +15,7 @@ use app\api\model\GlGoodsGallery;
 use app\api\model\GlGoodsSku;
 use app\api\service\SerCoupon;
 use app\api\validate\CurrencyValidate;
+use app\lib\exception\CommonException;
 
 class Goods
 {
@@ -73,6 +74,35 @@ class Goods
 
         return $result;
 
+    }
 
+    /**
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 获取商品列表
+     */
+    public function giveGoodsList(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['into_type'], 'require');
+        $into_type = request()->param('into_type');
+        switch ($into_type) {
+            case 'abc':
+                $parent_id = 154;
+                break;
+            case '3c618mobile':
+                $parent_id = 0;
+                break;
+            case '3c618pc':
+                $parent_id = 0;
+                break;
+            default:
+                throw new CommonException(['msg' => '无此入口']);
+        }
+
+        $result = GlGoods::giveGoodsListByParentId($parent_id);
+
+        return $result;
     }
 }

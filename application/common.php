@@ -241,8 +241,8 @@ function removeImgUrl($file)
 function byValIsNullRemoveArrVal($arr)
 {
     foreach ($arr as $k => $v) {
-        if($v == null){
-            byKeyRemoveArrVal($arr,$k);
+        if ($v == null) {
+            byKeyRemoveArrVal($arr, $k);
         }
     }
 }

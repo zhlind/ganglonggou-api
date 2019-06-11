@@ -33,6 +33,9 @@ class CmsCat
     /**
      * @return mixed
      * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * 分页获取分类
      */
     public function giveCatListByPage()

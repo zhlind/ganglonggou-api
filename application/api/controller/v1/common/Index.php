@@ -45,14 +45,9 @@ class Index
                 throw new CommonException(['msg' => '无此入口']);
         }
 
-        $result['ad_list'] = GlIndexAd::where(['into_type'=>$into_type])
-            ->order(['position_type','sort_order'=>'desc'])
-            ->select();
+        $result['ad_list'] = GlIndexAd::giveIndexAdListByIntoType($into_type);
 
-        $result['cat_list'] = GlCategory::where(['parent_id'=>$parent_id])
-            ->order(['sort_order'=>'desc'])
-            ->field('cat_id,cat_name')
-            ->select();
+        $result['cat_list'] = GlCategory::giveCatListByParentId($parent_id);
 
         $result['goods_list'] = GlGoods::giveGoodsListByParentId($parent_id);
 

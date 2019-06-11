@@ -1,8 +1,6 @@
 1.设置商品信息的缓存
-key:goods_list
+key:$parent_id . '_user_goods_list'
 2.首页广告信息缓存
-key:index_ad_list
-3.优惠券缓存
-key:coupon_list
-4.订单缓存
-key:order_list
+key:$into_type . '_user_ad_index_list'
+3.分类
+key:$parent_id . '_user_cat_list'

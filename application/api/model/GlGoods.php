@@ -10,6 +10,7 @@ namespace app\api\model;
 
 
 use app\lib\exception\CommonException;
+use think\facade\Cache;
 
 class GlGoods extends BaseModel
 {
@@ -51,28 +52,34 @@ class GlGoods extends BaseModel
     public static function giveGoodsListByParentId($parent_id)
     {
 
-        $cat_id_array_ = GlCategory::where(['parent_id' => $parent_id])
-            ->select()
-            ->toArray();
+        $result = Cache::get($parent_id . '_user_goods_list');
+        $debug = config('my_config.debug');
 
-        $cat_id_array = [];
-        if (count($cat_id_array_) > 0) {
-            foreach ($cat_id_array_ as $k => $v) {
-                array_push($cat_id_array, $v['cat_id']);
+        if (!$result || $debug) {
+            $cat_id_array_ = GlCategory::where(['parent_id' => $parent_id])
+                ->select()
+                ->toArray();
+            $cat_id_array = [];
+            if (count($cat_id_array_) > 0) {
+                foreach ($cat_id_array_ as $k => $v) {
+                    array_push($cat_id_array, $v['cat_id']);
+                }
+            } else {
+                throw new CommonException(['msg' => '无效的顶级分类']);
             }
-        } else {
-            throw new CommonException(['msg' => '无效的顶级分类']);
+
+            $where = [];
+            array_push($where, ['cat_id', 'in', $cat_id_array]);
+            array_push($where, ['is_on_sale', '=', 1]);
+            array_push($where, ['is_del', '=', 0]);
+
+            $result = self::where($where)
+                ->field(self::$screenGoodsInfo)
+                ->select()
+                ->toArray();
+
+            Cache::set($parent_id . '_user_goods_list', $result, config('my_config.sql_sel_cache_time'));
         }
-
-        $where = [];
-        array_push($where, ['cat_id', 'in', $cat_id_array]);
-        array_push($where, ['is_on_sale', '=', 1]);
-        array_push($where, ['is_del', '=', 0]);
-
-        $result = self::where($where)
-            ->field(self::$screenGoodsInfo)
-            ->select()
-            ->toArray();
 
         return $result;
     }
@@ -85,7 +92,8 @@ class GlGoods extends BaseModel
      * @throws \think\exception\DbException
      * 返回筛选过后商品信息
      */
-    public static function giveScreenGoodsInfo($goods_id){
+    public static function giveScreenGoodsInfo($goods_id)
+    {
 
         $where['goods_id'] = $goods_id;
         $where['is_on_sale'] = 1;

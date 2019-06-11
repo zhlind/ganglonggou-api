@@ -102,6 +102,13 @@ Route::post('api/:version/cms/cms_order_refund$', 'api/:version.cms.CmsAfterSale
 Route::get('api/:version/cms/cms_get_evaluate_list$', 'api/:version.cms.CmsEvaluate/giveEvaluateList');
 Route::post('api/:version/cms/cms_allow_evaluate$', 'api/:version.cms.CmsEvaluate/allowEvaluate');
 Route::post('api/:version/cms/cms_del_evaluate$', 'api/:version.cms.CmsEvaluate/delEvaluate');
+Route::post('api/:version/cms/cms_add_evaluate$', 'api/:version.cms.CmsEvaluate/addEvaluate');
+/*用户*/
+Route::get('api/:version/cms/cms_get_user_list$', 'api/:version.cms.CmsUser/giveUserListByPage');
+/*清除缓存*/
+Route::post('api/:version/cms/clean_user_goods_list_cache$', 'api/:version.CleanCache/CleanUserGoodsListCache');
+Route::post('api/:version/cms/clean_user_index_ad_list_cache$', 'api/:version.CleanCache/CleanUserIndexAdListCache');
+Route::post('api/:version/cms/clean_user_cat_list_cache$', 'api/:version.CleanCache/CleanUserCatListCache');
 
 
 
@@ -125,6 +132,8 @@ Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.
 /*普通*/
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
+//获取商品列表
+Route::get('api/:version/user_get_goods_list$', 'api/:version.common.Goods/giveGoodsList');
 //获取商品信息
 Route::get('api/:version/get_goods_info$', 'api/:version.common.Goods/giveGoodsInfoByGoodsId');
 //商品额外信息
@@ -133,6 +142,9 @@ Route::get('api/:version/get_extra_goods_info$', 'api/:version.common.Goods/give
 Route::get('api/:version/user_get_evaluate_by_goods_id_and_page$', 'api/:version.common.Evaluate/giveEvaluateListByGoodsIdAndPage');
 //登录
 Route::post('api/:version/test_login$', 'api/:version.common.Login/testLogin');
+Route::post('api/:version/abc_wx_login$', 'api/:version.common.Login/abcWxLogin');
+Route::post('api/:version/abc_app_login$', 'api/:version.common.Login/abcAppLogin');
+Route::post('api/:version/user_login_count$', 'api/:version.common.Login/loginCount');
 //领取优惠券
 Route::post('api/:version/user_get_coupon$', 'api/:version.common.Coupon/userGetCoupon');
 //领取优惠券

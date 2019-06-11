@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: administrator_liwy
- * Date: 2019/5/23
- * Time: 9:34
+ * Date: 2019/6/11
+ * Time: 12:58
  */
 
 namespace app\api\service\Login;
@@ -12,19 +12,17 @@ namespace app\api\service\Login;
 use app\api\model\GlUser;
 use app\lib\exception\CommonException;
 
-class TestLogin extends BaseLogin
+class AbcWxLogin extends BaseLogin
 {
-    private $testAppId;
-    private $id;
+
     private $intoType;
     private $sonIntoType;
-    private $testOpenid;
+    private $abcWxOpenid;
     private $userInfo;
 
     public function __construct()
     {
-        $this->testAppId = request()->param('test_app_appid');
-        $this->id = request()->param('id');
+        $this->abcWxOpenid = request()->param('abc_wx_openid');
         $this->intoType = 'abc';
         $this->sonIntoType = 'abc_wx';
     }
@@ -42,10 +40,11 @@ class TestLogin extends BaseLogin
     public function giveToken()
     {
 
-        $token = $this->getTokenByTestAppIdAndId();
+        $token = $this->getTokenByOpenId();
 
         return $token;
     }
+
 
     /**
      * @return string
@@ -57,23 +56,14 @@ class TestLogin extends BaseLogin
      * @throws \think\exception\PDOException
      * 保存用户信息，返回token
      */
-    private function getTokenByTestAppIdAndId()
+    private function getTokenByOpenId()
     {
-        if ($this->testAppId !== '1CIOOHCD70050101007F00000910CACD') {
-            throw new CommonException(['msg' => '登录信息验证不通过']);
-        }
-        if ($this->id !== 'fc196654571f8ba9a893350cbc40a59fceb615257d436a67') {
-            throw new CommonException(['msg' => '登录信息验证不通过']);
-        }
-        //随便生成一个
-        $this->testOpenid = 'eEcNpqDL37MerJW6rfqJSTdpD683B8s4';
-
-        $this->userInfo = GlUser::where(['test_openid' => $this->testOpenid])->find();
+        $this->userInfo = GlUser::where(['abc_wx_openid' => $this->abcWxOpenid])->find();
 
         if (!$this->userInfo) {
             //表示新用户
             $data = [
-                'user_name' => "test" . time(),
+                'user_name' => "abc_app" . time(),
                 'user_password' => md5("ganglong8888"),
                 'login_ip' => request()->ip(),
                 'user_img' => "head_portrait.png",
@@ -82,11 +72,11 @@ class TestLogin extends BaseLogin
                 'integral' => 0,
                 'is_del' => 0,
                 'login_count' => 1,
-                'test_openid' => $this->testOpenid
+                'abc_wx_openid' => $this->abcWxOpenid
             ];
             $user_id = GlUser::create($data)->id;
         } else {
-            $user_id = $this->userInfo->user_id;
+            $user_id = $this->userInfo['user_id'];
             //更新用户登录时间
             $data = [
                 'login_ip' => request()->ip(),
@@ -104,6 +94,5 @@ class TestLogin extends BaseLogin
         $token = self::saveToCache($result);
 
         return $token;
-
     }
 }

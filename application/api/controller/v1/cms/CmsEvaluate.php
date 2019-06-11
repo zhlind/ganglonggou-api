@@ -64,6 +64,8 @@ class CmsEvaluate
         //验证正整数
         (new CurrencyValidate())->myGoCheck(['evaluate_id', 'goods_id'], 'positiveInt');
 
+        UserAuthority::checkAuthority(8);
+
         $evaluate_id = request()->param('evaluate_id');
         $goods_id = request()->param('goods_id');
 
@@ -101,14 +103,18 @@ class CmsEvaluate
     {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['evaluate_id'], 'require');
+        (new CurrencyValidate())->myGoCheck(['evaluate_id', 'goods_id'], 'require');
         //验证正整数
-        (new CurrencyValidate())->myGoCheck(['evaluate_id'], 'positiveInt');
+        (new CurrencyValidate())->myGoCheck(['evaluate_id', 'goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
 
         $evaluate_id = request()->param('evaluate_id');
+        $goods_id = request()->param('goods_id');
 
         $upd_number = GlGoodsEvaluate::where([
             ['id', '=', $evaluate_id],
+            ['goods_id', '=', $goods_id],
             ['is_del', '=', 0],
         ])
             ->update([
@@ -119,7 +125,67 @@ class CmsEvaluate
             throw new CommonException(['msg' => '删除失败']);
         }
 
+        GlGoods::where([
+            ['goods_id', '=', $goods_id]
+        ])
+            ->setDec('evaluate_count');
+
         return true;
 
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * 提交评价
+     */
+    public function addEvaluate()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['create_time', 'goods_id', 'user_name', 'goods_name', 'sku_desc', 'rate', 'evaluate_text', 'user_img'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id', 'rate'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+
+        $evaluate_text = request()->param('evaluate_text');
+        $rate = request()->param('rate');
+        $create_time = (request()->param('create_time') + 0);
+
+
+        //检查长度
+        if (mb_strlen($evaluate_text) > 500) {
+            throw new CommonException(['msg' => '评价内容超出500字']);
+        }
+
+        //检查评分
+        if ($rate < 1 || $rate > 5) {
+            throw new CommonException(['msg' => '评分不合法']);
+        }
+
+
+        /*插入评价表*/
+        GlGoodsEvaluate::create([
+            'create_time' => $create_time,
+            'parent_id' => 0,
+            'is_del' => 0,
+            'is_allow' => 1,
+            'goods_id' => request()->param('goods_id'),
+            'user_name' => request()->param('user_name'),
+            'user_img' => removeImgUrl(request()->param('user_img')),
+            'goods_name' => request()->param('goods_name'),
+            'sku_desc' => request()->param('sku_desc'),
+            'rate' => request()->param('rate'),
+            'evaluate_text' => request()->param('evaluate_text'),
+        ]);
+
+        /*真加评论量*/
+        GlGoods::where([
+            ['goods_id', '=', request()->param('goods_id')]
+        ])
+            ->setInc('evaluate_count');
+
+        return true;
     }
 }
