@@ -191,12 +191,14 @@ class CmsGoods
                         $goods_info = $this->byKeyRemoveArrVal($v2, 'goods_id');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'cat_id');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'goods_img');
+                        $goods_info = $this->byKeyRemoveArrVal($goods_info, 'evaluate_count');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'original_img');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'goods_desc');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'attribute');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'add_time');
                         $goods_info = $this->byKeyRemoveArrVal($goods_info, 'upd_time');
                         $goods_info['cat_id'] = $cat_info->id;
+                        $goods_info['evaluate_count'] = 0;
                         $goods_info['attribute'] = $attribute;
                         $goods_info['add_time'] = time();
                         $goods_info['upd_time'] = time();
@@ -438,6 +440,60 @@ class CmsGoods
         $upd_number = GlGoods::where($data)->update(['is_del' => 1]);
         if ($upd_number < 1) {
             throw new CommonException(['msg' => '删除失败']);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 下架商品
+     */
+    public function endOfSaleGoods()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+        $data['goods_id'] = request()->param('goods_id');
+
+        //根据商品id删除商品
+        $upd_number = GlGoods::where($data)->update(['is_on_sale' => 0]);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '下架失败']);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 下架商品
+     */
+    public function allowSaleGoods()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+        $data['goods_id'] = request()->param('goods_id');
+
+        //根据商品id删除商品
+        $upd_number = GlGoods::where($data)->update(['is_on_sale' => 1]);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '上架失败']);
         }
 
         return true;

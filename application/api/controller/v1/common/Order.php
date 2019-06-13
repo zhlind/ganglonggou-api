@@ -14,6 +14,7 @@ use app\api\model\GlOrder;
 use app\api\model\GlOrderInvoice;
 use app\api\service\Login\BaseLogin;
 use app\api\service\Order\SerOrder;
+use app\api\service\OrderPayment\Payment;
 use app\api\validate\CurrencyValidate;
 use app\lib\exception\CommonException;
 
@@ -139,10 +140,11 @@ class Order
      * @throws \think\exception\PDOException
      * 订单签收
      */
-    public function takeOrderByOrderSn(){
+    public function takeOrderByOrderSn()
+    {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+        (new CurrencyValidate())->myGoCheck(['user_token', 'order_sn'], 'require');
 
         $order_sn = request()->param("order_sn");
         //获取用户信息
@@ -151,19 +153,19 @@ class Order
         $user_id = $user_desc['user_id'];
 
         $upd_number = GlOrder::where([
-            ['order_sn','=',$order_sn],
-            ['user_id','=',$user_id],
-            ['order_state','=',3],
-            ['is_del','=',0]
+            ['order_sn', '=', $order_sn],
+            ['user_id', '=', $user_id],
+            ['order_state', '=', 3],
+            ['is_del', '=', 0]
         ])->update([
-            'order_state'=>4,
-            'upd_time'=>time(),
-            'invalid_sign_goods_time'=>time(),
-            'prev_order_state'=>3,
+            'order_state' => 4,
+            'upd_time' => time(),
+            'invalid_sign_goods_time' => time(),
+            'prev_order_state' => 3,
         ]);
 
-        if($upd_number < 1){
-            throw new CommonException(['msg'=>'签收失败']);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '签收失败']);
         }
 
         return true;
@@ -176,10 +178,11 @@ class Order
      * @throws \think\exception\PDOException
      * 删除订单
      */
-    public function delOrderByOrderSn(){
+    public function delOrderByOrderSn()
+    {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+        (new CurrencyValidate())->myGoCheck(['user_token', 'order_sn'], 'require');
 
         $order_sn = request()->param("order_sn");
         //获取用户信息
@@ -188,17 +191,17 @@ class Order
         $user_id = $user_desc['user_id'];
 
         $upd_number = GlOrder::where([
-            ['order_sn','=',$order_sn],
-            ['user_id','=',$user_id],
-            ['order_state','=',0],
-            ['is_del','=',0]
+            ['order_sn', '=', $order_sn],
+            ['user_id', '=', $user_id],
+            ['order_state', '=', 0],
+            ['is_del', '=', 0]
         ])->update([
-            'is_del'=>1,
-            'upd_time'=>time(),
+            'is_del' => 1,
+            'upd_time' => time(),
         ]);
 
-        if($upd_number < 1){
-            throw new CommonException(['msg'=>'删除失败']);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '删除失败']);
         }
 
         return true;
@@ -211,10 +214,11 @@ class Order
      * @throws \think\exception\PDOException
      * 取消订单
      */
-    public function callOrderByOrderSn(){
+    public function callOrderByOrderSn()
+    {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['user_token','order_sn'], 'require');
+        (new CurrencyValidate())->myGoCheck(['user_token', 'order_sn'], 'require');
 
         $order_sn = request()->param("order_sn");
         //获取用户信息
@@ -223,20 +227,42 @@ class Order
         $user_id = $user_desc['user_id'];
 
         $upd_number = GlOrder::where([
-            ['order_sn','=',$order_sn],
-            ['user_id','=',$user_id],
-            ['order_state','=',1],
-            ['is_del','=',0]
+            ['order_sn', '=', $order_sn],
+            ['user_id', '=', $user_id],
+            ['order_state', '=', 1],
+            ['is_del', '=', 0]
         ])->update([
-            'order_state'=>0,
-            'upd_time'=>time(),
-            'prev_order_state'=>1,
+            'order_state' => 0,
+            'upd_time' => time(),
+            'prev_order_state' => 1,
         ]);
 
-        if($upd_number < 1){
-            throw new CommonException(['msg'=>'取消失败']);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '取消失败']);
         }
 
         return true;
+    }
+
+    /**
+     * @return mixed
+     * @throws CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 支付查询
+     */
+    public function queryOrderPayment()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['order_sn'], 'require');
+
+        $order_sn = request()->param('order_sn');
+
+        $PayClass = new Payment();
+        $PayClass->orderSn = $order_sn;
+
+        return $PayClass->orderPayQuery();
+
     }
 }

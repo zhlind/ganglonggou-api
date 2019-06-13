@@ -52,6 +52,10 @@ Route::post('api/:version/cms/cms_add_goods$', 'api/:version.cms.CmsGoods/addGoo
 Route::post('api/:version/cms/cms_upd_goods$', 'api/:version.cms.CmsGoods/updGoods');
 //删除商品
 Route::post('api/:version/cms/cms_del_goods$', 'api/:version.cms.CmsGoods/delGoods');
+//下架商品
+Route::post('api/:version/cms/cms_end_of_sale_goods$', 'api/:version.cms.CmsGoods/endOfSaleGoods');
+//上架商品
+Route::post('api/:version/cms/cms_allow_sale_goods$', 'api/:version.cms.CmsGoods/allowSaleGoods');
 //批量修改商品头
 Route::post('api/:version/cms/cms_batch_upd_goods_head_name$', 'api/:version.cms.CmsGoods/updGoodsNameHeadName');
 //批量修改商品头
@@ -109,10 +113,13 @@ Route::get('api/:version/cms/cms_get_user_list$', 'api/:version.cms.CmsUser/give
 Route::post('api/:version/cms/clean_user_goods_list_cache$', 'api/:version.CleanCache/CleanUserGoodsListCache');
 Route::post('api/:version/cms/clean_user_index_ad_list_cache$', 'api/:version.CleanCache/CleanUserIndexAdListCache');
 Route::post('api/:version/cms/clean_user_cat_list_cache$', 'api/:version.CleanCache/CleanUserCatListCache');
-
-
-
-
+/*分类展示*/
+Route::get('api/:version/cms/cms_get_classify_ad_list$', 'api/:version.cms.CmsClassifyAd/giveListByPage');
+Route::get('api/:version/cms/cms_get_parent_classify_ad_list$', 'api/:version.cms.CmsClassifyAd/giveParentClassify');
+Route::post('api/:version/cms/cms_add_classify_ad$', 'api/:version.cms.CmsClassifyAd/addClassify');
+Route::post('api/:version/cms/cms_upd_classify_ad$', 'api/:version.cms.CmsClassifyAd/updClassify');
+Route::post('api/:version/cms/cms_del_classify_ad$', 'api/:version.cms.CmsClassifyAd/delClassify');
+Route::post('api/:version/cms/cms_manual_add_classify_ad$', 'api/:version.cms.CmsClassifyAd/manualAddClassify');
 
 
 /*goods_make*/
@@ -124,9 +131,6 @@ Route::get('api/:version/goods_make/get_extra_goods_info$', 'api/:version.goods_
 Route::get('api/:version/goods_make/get_goods_info$', 'api/:version.goods_make.GoodsInfo/giveGoodsInfoByGoodsId');
 //提交预约订单
 Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.MakeOrder/addOrder');
-
-
-
 
 
 /*普通*/
@@ -184,6 +188,8 @@ Route::post('api/:version/user_call_order$', 'api/:version.common.Order/callOrde
 Route::post('api/:version/user_del_order$', 'api/:version.common.Order/delOrderByOrderSn');
 //签收订单
 Route::post('api/:version/user_take_order$', 'api/:version.common.Order/takeOrderByOrderSn');
+//订单支付查询
+Route::get('api/:version/user_query_order_payment$', 'api/:version.common.Order/queryOrderPayment');
 //提交评价
 Route::post('api/:version/user_ins_evaluate$', 'api/:version.common.Evaluate/insEvaluate');
 //提交售后

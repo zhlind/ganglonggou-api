@@ -66,6 +66,7 @@ class CmsIndexAd
         $data['sort_order'] = request()->param('sort_order');
         $data['ad_img'] = removeImgUrl(request()->param('ad_img'));
         $data['position_type_name'] = request()->param('position_type_name');
+        $data['text'] = request()->param('text');
         $data['father_position_name'] = request()->param('father_position_name');
         $data['position_type2'] = request()->param('position_type2');
         $data['goods_name'] = request()->param('goods_name');
@@ -78,6 +79,11 @@ class CmsIndexAd
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
             $data['goods_id'] = request()->param('goods_id');
+        }
+        if ($data['ad_type'] === '分类ID') {
+            (new CurrencyValidate())->myGoCheck(['cat_id'], 'require');
+            (new CurrencyValidate())->myGoCheck(['cat_id'], 'positiveInt');
+            $data['cat_id'] = request()->param('cat_id');
         }
 
         GlIndexAd::create($data);
@@ -108,6 +114,7 @@ class CmsIndexAd
         $data['ad_img'] = removeImgUrl(request()->param('ad_img'));
         $data['position_type_name'] = request()->param('position_type_name');
         $data['father_position_name'] = request()->param('father_position_name');
+        $data['text'] = request()->param('text');
         $data['position_type2'] = request()->param('position_type2');
         $data['goods_name'] = request()->param('goods_name');
         $data['goods_price'] = request()->param('goods_price');
@@ -118,6 +125,11 @@ class CmsIndexAd
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
             $data['goods_id'] = request()->param('goods_id');
+        }
+        if ($data['ad_type'] === '分类ID') {
+            (new CurrencyValidate())->myGoCheck(['cat_id'], 'require');
+            (new CurrencyValidate())->myGoCheck(['cat_id'], 'positiveInt');
+            $data['cat_id'] = request()->param('cat_id');
         }
 
         //更新

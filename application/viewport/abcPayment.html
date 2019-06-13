@@ -41,15 +41,15 @@
 
     function callpay() {
         $('.load-box').css('display', 'block');
-        window.location.href = '<{$order_info.payment_url}>';
+        window.location.href = '<{$order_info.payment_url|raw}>';
     }
 
     function blank() {
-        window.location.href = '<{$order_info.bank_url}>';
+        window.location.href = '<{$order_info.bank_url|raw}>';
     }
 
     $(function () {
-        $.cookie('success_url', '<{$order_info.success_url}>', {expires: 0.5, path: '/'});
+        $.cookie('success_url', '<{$order_info.success_url|raw}>', {expires: 0.5, path: '/'});
     });
 </script>
 </body>

@@ -105,16 +105,17 @@ class AbcEPayment
         if ($tResponse->isSuccess()) {
             $this->paymentUrl = $tResponse->GetValue("PaymentURL");
 
-            $wz=strpos($this->paymentUrl ,"TOKEN=");
-            $tokenID =substr($this->paymentUrl ,$wz+6,20);
-            $this->paymentUrl  = "https://www.abchina.com/luascript/mobilePayLua/{\"return\":{\"tokenID\":\"$tokenID \",\"backURL\":\"$this->successUrl&query_payment=yes&order_sn=$this->orderInfo['order_sn]\"}}";
+            $wz = strpos($this->paymentUrl, "TOKEN=");
+            $tokenID = substr($this->paymentUrl, $wz + 6, 20);
+            $this->paymentUrl = 'https://www.abchina.com/luascript/mobilePayLua/{"return":{"tokenID":"' . $tokenID .
+                '","backURL":"' . $this->successUrl .
+                '?query_payment=yes&order_sn=' . $this->orderInfo['order_sn'] . '"}}';
             return $this->paymentHtml();
         } else {
             throw new CommonException(["msg" => "支付发起失败"]);
         }
 
     }
-
 
 
     /**
