@@ -196,3 +196,5 @@ Route::post('api/:version/user_ins_evaluate$', 'api/:version.common.Evaluate/ins
 Route::post('api/:version/user_submit_after_sale$', 'api/:version.common.AfterSale/submitAfterSale');
 //取消售后
 Route::post('api/:version/user_call_after_sale$', 'api/:version.common.AfterSale/callAfterSale');
+//获取分类列表
+Route::get('api/:version/user_get_classify_ad_list$', 'api/:version.common.ClassifyAd/giveClassifyAdList');

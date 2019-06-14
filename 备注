@@ -4,3 +4,5 @@ key:$parent_id . '_user_goods_list'
 key:$into_type . '_user_ad_index_list'
 3.分类
 key:$parent_id . '_user_cat_list'
+4.分类广告
+key:$into_type.'_user_classify_ad_list'
