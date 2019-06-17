@@ -13,6 +13,7 @@ use app\api\model\GlCategory;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsGallery;
 use app\api\model\GlGoodsSku;
+use app\api\model\GlSupplier;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
 use app\lib\exception\CommonException;
@@ -72,7 +73,7 @@ class CmsGoods
             , 'promote_end_date', 'goods_img', 'original_img', 'is_on_sale'
             , 'is_best', 'is_new', 'is_hot', 'is_promote', 'goods_sales_volume', 'evaluate_count', 'attribute', 'goods_gallery', 'goods_sku_array'], 'require');
         //验证正整数
-        (new CurrencyValidate())->myGoCheck(['cat_id'], 'positiveInt');
+        (new CurrencyValidate())->myGoCheck(['cat_id', 'supplier_id'], 'positiveInt');
 
         UserAuthority::checkAuthority(8);
 
@@ -108,6 +109,20 @@ class CmsGoods
         $data['goods_stock'] = $this->countGoodsStock($goods_sku_array);
         $data['market_price'] = $this->mpMarketPrice($goods_sku_array);
         $data['shop_price'] = $this->mpShopPrice($goods_sku_array);
+
+        //插入供应商名称
+        $data['supplier_id'] = request()->param('supplier_id');
+        $supplier_info = GlSupplier::where([
+            'id' => request()->param('supplier_id'),
+            'is_del' => 0
+        ])
+            ->find();
+
+        if (!$supplier_info) {
+            throw new CommonException(['msg' => '无效供应商']);
+        }
+
+        $data['supplier_name'] = $supplier_info['supplier_name'];
 
         //插入商品
         $goods_info = GlGoods::create($data);
@@ -298,7 +313,7 @@ class CmsGoods
             , 'promote_end_date', 'goods_img', 'original_img', 'is_on_sale'
             , 'is_best', 'is_new', 'is_hot', 'is_promote', 'goods_sales_volume', 'evaluate_count', 'attribute', 'goods_gallery', 'goods_sku_array', 'goods_id'], 'require');
         //验证正整数
-        (new CurrencyValidate())->myGoCheck(['cat_id', 'goods_id'], 'positiveInt');
+        (new CurrencyValidate())->myGoCheck(['cat_id', 'goods_id', 'supplier_id'], 'positiveInt');
 
         UserAuthority::checkAuthority(8);
 
@@ -335,6 +350,20 @@ class CmsGoods
         $data['goods_stock'] = $this->countGoodsStock($goods_sku_array);
         $data['market_price'] = $this->mpMarketPrice($goods_sku_array);
         $data['shop_price'] = $this->mpShopPrice($goods_sku_array);
+
+        //插入供应商名称
+        $data['supplier_id'] = request()->param('supplier_id');
+        $supplier_info = GlSupplier::where([
+            'id' => request()->param('supplier_id'),
+            'is_del' => 0
+        ])
+            ->find();
+
+        if (!$supplier_info) {
+            throw new CommonException(['msg' => '无效供应商']);
+        }
+
+        $data['supplier_name'] = $supplier_info['supplier_name'];
 
         //更新商品
         $upd_number = $goods_info = GlGoods::where($data2)->update($data);

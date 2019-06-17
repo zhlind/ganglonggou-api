@@ -91,6 +91,9 @@ class Goods
             case 'abc':
                 $parent_id = 154;
                 break;
+            case 'wx':
+                $parent_id = 168;
+                break;
             case '3c618mobile':
                 $parent_id = 0;
                 break;

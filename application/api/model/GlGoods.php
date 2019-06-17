@@ -18,7 +18,8 @@ class GlGoods extends BaseModel
     static private $screenGoodsInfo = 'goods_id,cat_id,goods_sn,goods_name,goods_head_name,
             market_price,shop_price,keywords,goods_brief,goods_desc,goods_stock,
             goods_img,original_img,sort_order,goods_sales_volume,evaluate_count,
-            attribute,is_promote,promote_number,promote_start_date,promote_end_date';//对外筛选后的商品信息
+            attribute,is_promote,promote_number,promote_start_date,promote_end_date,
+            supplier_id,supplier_name';//对外筛选后的商品信息
 
     public function getOriginalImgAttr($value, $data)
     {
@@ -78,6 +79,13 @@ class GlGoods extends BaseModel
                 ->select()
                 ->toArray();
 
+            foreach ($result as $k => $v) {
+                foreach ($cat_id_array_ as $k2 => $v2) {
+                    if ($v['cat_id'] === $v2['cat_id']) {
+                        $result[$k]['cat_name'] = $v2['cat_name'];
+                    }
+                }
+            }
             Cache::set($parent_id . '_user_goods_list', $result, config('my_config.sql_sel_cache_time'));
         }
 

@@ -120,6 +120,11 @@ Route::post('api/:version/cms/cms_add_classify_ad$', 'api/:version.cms.CmsClassi
 Route::post('api/:version/cms/cms_upd_classify_ad$', 'api/:version.cms.CmsClassifyAd/updClassify');
 Route::post('api/:version/cms/cms_del_classify_ad$', 'api/:version.cms.CmsClassifyAd/delClassify');
 Route::post('api/:version/cms/cms_manual_add_classify_ad$', 'api/:version.cms.CmsClassifyAd/manualAddClassify');
+/*供应商*/
+Route::post('api/:version/cms/cms_add_supplier$', 'api/:version.cms.CmsSupplier/addSupplier');
+Route::post('api/:version/cms/cms_upd_supplier$', 'api/:version.cms.CmsSupplier/updSupplier');
+Route::post('api/:version/cms/cms_del_supplier$', 'api/:version.cms.CmsSupplier/delSupplier');
+Route::get('api/:version/cms/cms_get_all_supplier$', 'api/:version.cms.CmsSupplier/giveAllSupplier');
 
 
 /*goods_make*/

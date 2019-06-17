@@ -25,8 +25,8 @@ class TestLogin extends BaseLogin
     {
         $this->testAppId = request()->param('test_app_appid');
         $this->id = request()->param('id');
-        $this->intoType = 'abc';
-        $this->sonIntoType = 'abc_wx';
+        $this->intoType = 'wx';
+        $this->sonIntoType = 'wx';
     }
 
     /**
