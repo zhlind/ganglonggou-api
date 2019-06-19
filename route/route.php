@@ -125,6 +125,11 @@ Route::post('api/:version/cms/cms_add_supplier$', 'api/:version.cms.CmsSupplier/
 Route::post('api/:version/cms/cms_upd_supplier$', 'api/:version.cms.CmsSupplier/updSupplier');
 Route::post('api/:version/cms/cms_del_supplier$', 'api/:version.cms.CmsSupplier/delSupplier');
 Route::get('api/:version/cms/cms_get_all_supplier$', 'api/:version.cms.CmsSupplier/giveAllSupplier');
+/*文章*/
+Route::post('api/:version/cms/cms_add_article$', 'api/:version.cms.CmsArticle/addArticle');
+Route::post('api/:version/cms/cms_upd_article$', 'api/:version.cms.CmsArticle/updArticle');
+Route::post('api/:version/cms/cms_del_article$', 'api/:version.cms.CmsArticle/delArticle');
+Route::get('api/:version/cms/cms_get_all_article$', 'api/:version.cms.CmsArticle/giveAllArticle');
 
 
 /*goods_make*/
@@ -203,3 +208,5 @@ Route::post('api/:version/user_submit_after_sale$', 'api/:version.common.AfterSa
 Route::post('api/:version/user_call_after_sale$', 'api/:version.common.AfterSale/callAfterSale');
 //获取分类列表
 Route::get('api/:version/user_get_classify_ad_list$', 'api/:version.common.ClassifyAd/giveClassifyAdList');
+//获取文章
+Route::get('api/:version/user_get_article$', 'api/:version.common.Article/giveArticle');

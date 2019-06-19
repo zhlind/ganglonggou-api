@@ -26,31 +26,32 @@ class Pay
      * @throws \think\exception\DbException
      * 通过登录入口获取支付列表
      */
-    public function givePayList(){
+    public function givePayList()
+    {
 
         //验证必要
         (new CurrencyValidate())->myGoCheck(['user_token'], 'require');
 
         //获取用户信息
         $user_token = request()->param("user_token");
-        $user_desc = BaseLogin::getCurrentIdentity(['user_id','into_type','son_into_type'],$user_token);
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
         $into_type = $user_desc['into_type'];
         $son_into_type = $user_desc['son_into_type'];
 
-        $result = GlPayType::where([['into_type','=',$into_type]
-        ,['son_into_type','=',$son_into_type]
-        ,['is_del','=',0]])
-        ->field('pay_code,pay_name,pay_id')
-        ->select();
+        $result = GlPayType::where([['into_type', '=', $into_type]
+            , ['son_into_type', '=', $son_into_type]
+            , ['is_del', '=', 0]])
+            ->field('pay_code,pay_name,pay_id')
+            ->select();
 
-        if(count($result) === 0){
-            throw new CommonException(['msg'=>'无有效支付方式']);
+        if (count($result) === 0) {
+            throw new CommonException(['msg' => '无有效支付方式']);
         }
 
-        foreach ($result as $k => $v){
-            $result[$k]['ByStages'] = GlByStages::where([['pay_id','=',$v['pay_id']]
-            ,['is_del','=',0]])
-                ->field('is_del,bystages_planCode',true)
+        foreach ($result as $k => $v) {
+            $result[$k]['ByStages'] = GlByStages::where([['pay_code', '=', $v['pay_code']]
+                , ['is_del', '=', 0]])
+                ->field('is_del,bystages_planCode', true)
                 ->select();
         }
 
@@ -64,10 +65,11 @@ class Pay
      * @throws \think\exception\DbException
      * 订单支付
      */
-    public function OrderPayment(){
+    public function OrderPayment()
+    {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['order_sn', 'user_token','success_url','back_url'], 'require');
+        (new CurrencyValidate())->myGoCheck(['order_sn', 'user_token', 'success_url', 'back_url'], 'require');
 
         $PaymentClass = new Payment();
         $PaymentClass->userToken = request()->param('user_token');

@@ -416,6 +416,7 @@ class CmsGoods
         $where = [];
         array_push($where, ['goods_name', 'like', '%' . request()->param('goods_name') . '%']);
         array_push($where, ['is_del', '=', 0]);
+        array_push($where, ['is_on_sale', '=', 1]);
         $result = GlGoods::where($where)
             ->field('goods_id,concat_ws(\'&\',goods_head_name,goods_name) as goods_name')
             ->select();

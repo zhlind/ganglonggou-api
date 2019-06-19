@@ -93,6 +93,29 @@ class GlGoods extends BaseModel
     }
 
     /**
+     * @param $supplier_id
+     * @param $number
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 根据supplierID返回商品列表
+     */
+    public static function giveGoodsListBySupplierId($supplier_id, $number)
+    {
+        return self::where([
+            ['supplier_id', '=', $supplier_id],
+            ['is_del', '=', 0],
+            ['is_on_sale', '=', 1],
+        ])
+            ->order(['click_count' => 'desc'])
+            ->field(self::$screenGoodsInfo)
+            ->limit($number)
+            ->select();
+
+    }
+
+    /**
      * @param $goods_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -108,8 +131,7 @@ class GlGoods extends BaseModel
         $where['is_del'] = 0;
 
         $result = GlGoods::where($where)->field(self::$screenGoodsInfo)
-            ->find()
-            ->toArray();
+            ->find();
 
         return $result;
     }

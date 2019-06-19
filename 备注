@@ -6,3 +6,5 @@ key:$into_type . '_user_ad_index_list'
 key:$parent_id . '_user_cat_list'
 4.分类广告
 key:$into_type.'_user_classify_ad_list'
+5.文章
+key:$article_id.'_article'

@@ -24,7 +24,7 @@ class CmsSupplier
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
-     * 返回所以供应商
+     * 返回所有供应商
      */
     public function giveAllSupplier()
     {

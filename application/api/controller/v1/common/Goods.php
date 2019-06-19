@@ -14,6 +14,7 @@ use app\api\model\GlGoodsEvaluate;
 use app\api\model\GlGoodsGallery;
 use app\api\model\GlGoodsSku;
 use app\api\service\SerCoupon;
+use app\api\service\SerSupplierPreview;
 use app\api\validate\CurrencyValidate;
 use app\lib\exception\CommonException;
 
@@ -32,12 +33,12 @@ class Goods
     {
 
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['goods_id','into_type'], 'require');
+        (new CurrencyValidate())->myGoCheck(['goods_id', 'into_type'], 'require');
         //验证正整数
         (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
 
         $data['goods_id'] = request()->param('goods_id');
-        $into_type= request()->param('into_type');
+        $into_type = request()->param('into_type');
 
         $result['goods_gallery'] = GlGoodsGallery::where($data)
             ->select();
@@ -45,7 +46,9 @@ class Goods
         $result['goods_sku'] = GlGoodsSku::where($data)
             ->select();
 
-        $result['coupon_list'] = (new SerCoupon())->giveUsableCouponByGoodsIdAndIntoType($data['goods_id'],$into_type);
+        $result['coupon_list'] = (new SerCoupon())->giveUsableCouponByGoodsIdAndIntoType($data['goods_id'], $into_type);
+
+        $result['supplier_preview_info'] = (new SerSupplierPreview())->giveSupplierPreviewByGoodsId($data['goods_id']);
 
         //增加点击量
         GlGoods::where($data)->setInc('click_count');
@@ -62,7 +65,8 @@ class Goods
      * @throws \think\exception\DbException
      * 通过goodsId获取商品信息
      */
-    public function giveGoodsInfoByGoodsId(){
+    public function giveGoodsInfoByGoodsId()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
         //验证正整数
@@ -83,7 +87,8 @@ class Goods
      * @throws \think\exception\DbException
      * 获取商品列表
      */
-    public function giveGoodsList(){
+    public function giveGoodsList()
+    {
         //验证必要
         (new CurrencyValidate())->myGoCheck(['into_type'], 'require');
         $into_type = request()->param('into_type');
