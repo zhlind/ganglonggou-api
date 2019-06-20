@@ -159,4 +159,25 @@ class SerCoupon
         }
         return $coupon_list;
     }
+
+    /**
+     * @param $into_type
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 通过入口返回优惠券列表
+     */
+    public function giveCouponListByIntoType($into_type)
+    {
+        $coupon_list = GlCoupon::where([
+            ['into_type', '=', $into_type]
+            , ['is_del', '=', 0]
+            , ['start_grant_time', '<', time()]
+            , ['end_grant_time', '>', time()]
+        ])
+            ->select();
+
+        return $coupon_list;
+    }
 }

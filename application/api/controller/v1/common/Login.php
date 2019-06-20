@@ -14,6 +14,7 @@ use app\api\service\Login\AbcAppLogin;
 use app\api\service\Login\AbcWxLogin;
 use app\api\service\Login\BaseLogin;
 use app\api\service\Login\TestLogin;
+use app\api\service\Login\WxLogin;
 use app\api\validate\CurrencyValidate;
 
 class Login
@@ -107,6 +108,28 @@ class Login
         (new CurrencyValidate())->myGoCheck(['abc_wx_openid'], 'require');
 
         return (new AbcWxLogin())->giveToken();
+
+    }
+
+    /**
+     * @return string
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     * 微信公众号登录
+     */
+    public function wxLogin()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['code'], 'require');
+        $code = request()->param('code');
+
+
+        return (new WxLogin($code))->giveToken();
+
 
     }
 }

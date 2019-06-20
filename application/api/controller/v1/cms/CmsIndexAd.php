@@ -9,6 +9,7 @@
 namespace app\api\controller\v1\cms;
 
 
+use app\api\model\GlGoods;
 use app\api\model\GlIndexAd;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
@@ -53,6 +54,9 @@ class CmsIndexAd
     /**
      * @return bool
      * @throws \app\lib\exception\CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * 添加广告
      */
     public function addIndexAd()
@@ -79,6 +83,14 @@ class CmsIndexAd
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
             $data['goods_id'] = request()->param('goods_id');
+            /*去查询出商品名称和商品价格*/
+            $goods_info = GlGoods::where([
+                ['goods_id', '=', $data['goods_id']]
+            ])
+                ->find();
+            $data['goods_name'] = $goods_info['goods_name'];
+            $data['goods_price'] = $goods_info['shop_price'];
+            $data['origin_goods_price'] = $goods_info['market_price'];
         }
         if ($data['ad_type'] === '分类ID') {
             (new CurrencyValidate())->myGoCheck(['cat_id'], 'require');
@@ -125,6 +137,14 @@ class CmsIndexAd
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'require');
             (new CurrencyValidate())->myGoCheck(['goods_id'], 'positiveInt');
             $data['goods_id'] = request()->param('goods_id');
+            /*去查询出商品名称和商品价格*/
+            $goods_info = GlGoods::where([
+                ['goods_id', '=', $data['goods_id']]
+            ])
+                ->find();
+            $data['goods_name'] = $goods_info['goods_name'];
+            $data['goods_price'] = $goods_info['shop_price'];
+            $data['origin_goods_price'] = $goods_info['market_price'];
         }
         if ($data['ad_type'] === '分类ID') {
             (new CurrencyValidate())->myGoCheck(['cat_id'], 'require');

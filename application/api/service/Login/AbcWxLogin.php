@@ -61,31 +61,13 @@ class AbcWxLogin extends BaseLogin
         $this->userInfo = GlUser::where(['abc_wx_openid' => $this->abcWxOpenid])->find();
 
         if (!$this->userInfo) {
-            //表示新用户
-            $data = [
-                'user_name' => "abc_app" . time(),
-                'user_password' => md5("ganglong8888"),
-                'login_ip' => request()->ip(),
-                'user_img' => "head_portrait.png",
-                'add_time' => time(),
-                'login_time' => time(),
-                'integral' => 0,
-                'is_del' => 0,
-                'login_count' => 1,
-                'abc_wx_openid' => $this->abcWxOpenid
-            ];
-            $user_id = GlUser::create($data)->id;
+            //新用户
+            $insert_info_array = ['abc_wx_openid' => $this->abcWxOpenid];
+            $user_id = self::addUser($insert_info_array,'abc_wx');
         } else {
+            //老用户
             $user_id = $this->userInfo['user_id'];
-            //更新用户登录时间
-            $data = [
-                'login_ip' => request()->ip(),
-                'login_time' => time()
-            ];
-            GlUser::where(['user_id' => $user_id])
-                ->update($data);
-            GlUser::where(['user_id' => $user_id])
-                ->setInc('login_count');
+            self::recordUserLogin($user_id);
         }
 
         $result['user_id'] = $user_id;

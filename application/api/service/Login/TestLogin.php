@@ -66,36 +66,18 @@ class TestLogin extends BaseLogin
             throw new CommonException(['msg' => '登录信息验证不通过']);
         }
         //随便生成一个
-        $this->testOpenid = 'eEcNpqDL37MerJW6rfqJSTdpD683B8s4';
+        $this->testOpenid = 'eEcNpqDL37MerJW6rfqJSTdpD683B8s5';
 
         $this->userInfo = GlUser::where(['test_openid' => $this->testOpenid])->find();
 
         if (!$this->userInfo) {
             //表示新用户
-            $data = [
-                'user_name' => "test" . time(),
-                'user_password' => md5("ganglong8888"),
-                'login_ip' => request()->ip(),
-                'user_img' => "head_portrait.png",
-                'add_time' => time(),
-                'login_time' => time(),
-                'integral' => 0,
-                'is_del' => 0,
-                'login_count' => 1,
-                'test_openid' => $this->testOpenid
-            ];
-            $user_id = GlUser::create($data)->id;
+            $insert_info_array = ['test_openid' => $this->testOpenid];
+            $user_id = self::addUser($insert_info_array,'test');
         } else {
-            $user_id = $this->userInfo->user_id;
-            //更新用户登录时间
-            $data = [
-                'login_ip' => request()->ip(),
-                'login_time' => time()
-            ];
-            GlUser::where(['user_id' => $user_id])
-                ->update($data);
-            GlUser::where(['user_id' => $user_id])
-                ->setInc('login_count');
+            //老用户
+            $user_id = $this->userInfo['user_id'];
+            self::recordUserLogin($user_id);
         }
 
         $result['user_id'] = $user_id;

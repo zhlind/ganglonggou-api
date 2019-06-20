@@ -13,6 +13,7 @@ use app\api\model\GlArticle;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
 use app\lib\exception\CommonException;
+use think\facade\Cache;
 
 class CmsArticle
 {
@@ -73,13 +74,18 @@ class CmsArticle
         //权限
         UserAuthority::checkAuthority(8);
 
+        $article_id = request()->param('article_id');
+
         GlArticle::where([
-            ['id', '=', request()->param('article_id')]
+            ['id', '=', $article_id]
         ])
             ->update([
                 'article_name' => request()->param('article_name'),
                 'article_body' => removeImgUrl(request()->param('article_body')),
             ]);
+
+        /*更新缓存*/
+        Cache::rm($article_id . '_article');
 
         return true;
 

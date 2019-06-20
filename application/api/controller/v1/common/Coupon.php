@@ -65,4 +65,22 @@ class Coupon
 
 
     }
+
+    /**
+     * @return array
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 入口返回优惠券列表
+     */
+    public function giveCouponListByIntoType(){
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['into_type'], 'require');
+
+        $into_type = request()->param("into_type");
+
+        return (new SerCoupon())->giveCouponListByIntoType($into_type);
+
+    }
 }

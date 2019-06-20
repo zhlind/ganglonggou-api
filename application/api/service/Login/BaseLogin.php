@@ -9,6 +9,7 @@
 namespace app\api\service\Login;
 
 
+use app\api\model\GlUser;
 use app\lib\exception\CommonException;
 
 class BaseLogin
@@ -85,7 +86,7 @@ class BaseLogin
         // $identities = cache($token);
 
         if (!$identities) {
-            throw new CommonException(['msg'=>'获取用户信息失败','code'=>'400','error_code'=>10002]);
+            throw new CommonException(['msg' => '获取用户信息失败', 'code' => '400', 'error_code' => 10002]);
         } else {
             if (!is_array($identities)) {
                 $identities = json_decode($identities, true);
@@ -98,5 +99,55 @@ class BaseLogin
             }
             return $result;
         }
+    }
+
+    /**
+     * @param array $insert_info_array
+     * @param string $user_head
+     * @return mixed
+     * 添加新用户
+     */
+    public static function addUser($insert_info_array = [], $user_head = 'routine')
+    {
+        //表示新用户
+        $data = [
+            'user_name' => $user_head . time(),
+            'user_password' => md5("ganglong8888"),
+            'login_ip' => request()->ip(),
+            'user_img' => "head_portrait.png",
+            'add_time' => time(),
+            'login_time' => time(),
+            'integral' => 0,
+            'is_del' => 0,
+            'login_count' => 1,
+        ];
+        foreach ($insert_info_array as $k => $v) {
+            $data[$k] = $v;
+        }
+
+        return GlUser::create($data)->id;
+
+    }
+
+    /**
+     * @param $user_id
+     * @return bool
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 记录用户登录
+     */
+    public static function recordUserLogin($user_id)
+    {
+        $data = [
+            'login_ip' => request()->ip(),
+            'login_time' => time()
+        ];
+        //更新用户登录时间
+        GlUser::where(['user_id' => $user_id])
+            ->update($data);
+        GlUser::where(['user_id' => $user_id])
+            ->setInc('login_count');
+
+        return true;
     }
 }

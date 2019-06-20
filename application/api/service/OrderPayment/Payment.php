@@ -143,6 +143,10 @@ class Payment
 
             $PayClass = new AbcEPayment();
 
+        }elseif ($this->payInfo['pay_code'] === 'WxJsApiPayment') {
+
+            $PayClass = new WxJsApiPayment();
+
         } else {
             throw new CommonException(['无效支付方式,该支付方式或已关闭']);
         }

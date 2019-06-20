@@ -144,6 +144,8 @@ Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.
 
 
 /*普通*/
+/*微信分享*/
+Route::get('api/:version/get_WxJsSdk$', 'api/:version.WxShare/giveWxShareInfo');
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
 //获取商品列表
@@ -158,11 +160,14 @@ Route::get('api/:version/user_get_evaluate_by_goods_id_and_page$', 'api/:version
 Route::post('api/:version/test_login$', 'api/:version.common.Login/testLogin');
 Route::post('api/:version/abc_wx_login$', 'api/:version.common.Login/abcWxLogin');
 Route::post('api/:version/abc_app_login$', 'api/:version.common.Login/abcAppLogin');
+Route::post('api/:version/wx_login$', 'api/:version.common.Login/wxLogin');
 Route::post('api/:version/user_login_count$', 'api/:version.common.Login/loginCount');
 //领取优惠券
 Route::post('api/:version/user_get_coupon$', 'api/:version.common.Coupon/userGetCoupon');
-//领取优惠券
+//用户优惠券
 Route::get('api/:version/user_get_coupon_list$', 'api/:version.common.Coupon/giveCouponListByUserId');
+//用户优惠券
+Route::get('api/:version/user_get_all_coupon_list$', 'api/:version.common.Coupon/giveCouponListByIntoType');
 //用户获取购物车
 Route::post('api/:version/user_get_cart$', 'api/:version.common.Cart/userGetCart');
 //添加地址

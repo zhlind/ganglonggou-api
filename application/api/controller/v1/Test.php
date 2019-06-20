@@ -15,41 +15,36 @@ use app\api\model\GlIndexAd;
 use app\api\model\Test1;
 use app\api\model\Test2;
 use app\api\service\SerEmail;
+use app\lib\exception\CommonException;
 use Noodlehaus\Config;
 use think\Controller;
 use think\Db;
+use think\facade\Log;
 
 class Test extends Controller
 {
     public function test()
     {
-        if (isset($_SERVER)) {
-            if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-                $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-            } elseif (isset($_SERVER["HTTP_CLIENT_ip"])) {
-                $ip = $_SERVER["HTTP_CLIENT_ip"];
-            } else {
-                $ip = $_SERVER["REMOTE_ADDR"];
-            }
-        } else {
-            if (getenv('HTTP_X_FORWARDED_FOR')) {
-                $ip = getenv('HTTP_X_FORWARDED_FOR');
-            } elseif (getenv('HTTP_CLIENT_ip')) {
-                $ip = getenv('HTTP_CLIENT_ip');
-            } else {
-                $ip = getenv('REMOTE_ADDR');
-            }
-        }
-        if(trim($ip)=="::1"){
-            $ip="127.0.0.1";
-        }
-        return $ip;
+
+        $data = [
+            'user_name' => '11' . time(),
+            'user_password' => md5("ganglong8888"),
+            'login_ip' => request()->ip(),
+            'user_img' => "head_portrait.png",
+            'add_time' => time(),
+            'login_time' => time(),
+            'integral' => 0,
+            'is_del' => 0,
+            'login_count' => 1,
+        ];
+        Log::write($data, 'error');
+        return true;
 
     }
 
 
-
-    private function sendEmailTest(){
+    private function sendEmailTest()
+    {
 
         $head = '测试';
         $email_body = '用户支付成功:';
@@ -65,12 +60,12 @@ class Test extends Controller
             ',购买数量:' . $v['goods_number'] .
             ',SkuId:' . $v['sku_id'] .
             ',属性详情:' . $v['sku_desc'] .
-            ',剩余库存:' .($sku_info['sku_stock'] - $v['goods_number']) .
+            ',剩余库存:' . ($sku_info['sku_stock'] - $v['goods_number']) .
             ',库存检测结果:库存充足)';
 
-        $address_array = ['987303897@qq.com','582870246@qq.com'];
+        $address_array = ['987303897@qq.com', '582870246@qq.com'];
 
-        (new SerEmail())->sendEmail($head,$email_body,$address_array);
+        (new SerEmail())->sendEmail($head, $email_body, $address_array);
 
         return $email_body;
 
