@@ -28,7 +28,6 @@ class CleanCache
 
         return true;
     }
-
     public function CleanUserIndexAdListCache()
     {
         //验证必要
@@ -41,7 +40,6 @@ class CleanCache
         return true;
 
     }
-
     public function CleanUserCatListCache()
     {
         $cat_array = GlCategory::where([
@@ -52,6 +50,17 @@ class CleanCache
         foreach ($cat_array as $k => $v) {
             Cache::rm($v['parent_id'] . '_user_cat_list');
         }
+
+        return true;
+    }
+    public function CleanUserClassifyListCache()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['into_type'], 'require');
+
+        $into_type = request()->param('into_type');
+
+        Cache::rm($into_type . '_user_classify_ad_list');
 
         return true;
     }

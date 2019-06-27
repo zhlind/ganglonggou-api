@@ -23,7 +23,7 @@ Route::get('api/:version/goods_make/get_WxJsSdk', 'api/:version.WxShare/giveWxSh
 
 /*支付回调*/
 //微信公众号支付回调
-Route::any('api/:version/notify/wx_js_api_notify$', 'api/:version.notify.PayNotify/wxJSAPIPayNotify');
+Route::any('api/:version/notify/wx_js_api_notify$', 'api/:version.notify.PayNotify/wxJsApiNotify');
 //农行支付回调
 Route::any('api/:version/notify/abc_notify$', 'api/:version.notify.PayNotify/abcPayNotify');
 //中行支付回调
@@ -113,6 +113,7 @@ Route::get('api/:version/cms/cms_get_user_list$', 'api/:version.cms.CmsUser/give
 Route::post('api/:version/cms/clean_user_goods_list_cache$', 'api/:version.CleanCache/CleanUserGoodsListCache');
 Route::post('api/:version/cms/clean_user_index_ad_list_cache$', 'api/:version.CleanCache/CleanUserIndexAdListCache');
 Route::post('api/:version/cms/clean_user_cat_list_cache$', 'api/:version.CleanCache/CleanUserCatListCache');
+Route::post('api/:version/cms/clean_user_classify_cache$', 'api/:version.CleanCache/CleanUserClassifyListCache');
 /*分类展示*/
 Route::get('api/:version/cms/cms_get_classify_ad_list$', 'api/:version.cms.CmsClassifyAd/giveListByPage');
 Route::get('api/:version/cms/cms_get_parent_classify_ad_list$', 'api/:version.cms.CmsClassifyAd/giveParentClassify');
@@ -215,3 +216,9 @@ Route::post('api/:version/user_call_after_sale$', 'api/:version.common.AfterSale
 Route::get('api/:version/user_get_classify_ad_list$', 'api/:version.common.ClassifyAd/giveClassifyAdList');
 //获取文章
 Route::get('api/:version/user_get_article$', 'api/:version.common.Article/giveArticle');
+//pc端获取请求code
+Route::get('api/:version/user_get_pc_login_code$', 'api/:version.common.Login/pcGetLoginCode');
+//pc端通过wxOpenid登录
+Route::get('api/:version/pc_login_by_openid$', 'api/:version.common.Login/pcByWxOpenidLogin');
+//wx端写入PcToken
+Route::post('api/:version/wx_write_pc_token$', 'api/:version.common.Login/writePcTokenByWxToken');

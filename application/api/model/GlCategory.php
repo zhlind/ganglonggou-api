@@ -22,7 +22,7 @@ class GlCategory extends BaseModel
         if (!$result || $debug) {
             $result = self::where(['parent_id' => $parent_id])
                 ->order(['sort_order' => 'desc'])
-                ->field('cat_id,cat_name')
+                ->field('cat_id,cat_name,sort_order')
                 ->select();
 
             Cache::set($parent_id . '_user_cat_list', $result, config('my_config.sql_sel_cache_time'));

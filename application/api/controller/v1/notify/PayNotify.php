@@ -10,6 +10,8 @@ namespace app\api\controller\v1\notify;
 
 
 use app\api\service\OrderPayment\AbcPayment;
+use app\api\service\OrderPayment\WxJsApiPayment;
+use think\facade\Log;
 
 class PayNotify
 {
@@ -17,9 +19,21 @@ class PayNotify
      * @return \think\response\View
      * 农行支付回调
      */
-    public function abcPayNotify(){
+    public function abcPayNotify()
+    {
 
-        $result = (new AbcPayment()) ->NotifyProcess();
+        $result = (new AbcPayment())->notifyProcess();
+
+        return $result;
+    }
+
+    /**
+     *微信支付回调
+     */
+    public function wxJsApiNotify()
+    {
+
+        $result = (new WxJsApiPayment())->notifyProcess();
 
         return $result;
     }

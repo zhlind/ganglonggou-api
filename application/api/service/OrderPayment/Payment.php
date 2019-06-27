@@ -180,6 +180,8 @@ class Payment
             $PayClass = new AbcPayment();
         } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
+        }elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
+            $PayClass = new WxJsApiPayment();
         } else {
             throw new CommonException(["msg" => "该支付方式支付查询功能暂未开放"]);
         }
@@ -215,6 +217,8 @@ class Payment
             $PayClass = new AbcPayment();
         } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
+        }elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
+            $PayClass = new WxJsApiPayment();
         } else {
             throw new CommonException(["msg" => "该支付方式支付退款功能暂未开放"]);
         }
@@ -317,6 +321,9 @@ class Payment
                         break;
                     case 'AbcEPayment':
                         $update['abc_order_sn'] = $third_party_sn_array['abc_order_sn'];
+                        break;
+                    case 'WxJsApiPayment':
+                        $update['wx_js_api_order_sn'] = $third_party_sn_array['wx_js_api_order_sn'];
                         break;
                     default:
                         throw new CommonException(['msg' => '支付类型错误，无法改变支付状态']);

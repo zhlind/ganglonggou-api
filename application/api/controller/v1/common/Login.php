@@ -13,9 +13,11 @@ use app\api\model\GlUser;
 use app\api\service\Login\AbcAppLogin;
 use app\api\service\Login\AbcWxLogin;
 use app\api\service\Login\BaseLogin;
+use app\api\service\Login\PcLogin;
 use app\api\service\Login\TestLogin;
 use app\api\service\Login\WxLogin;
 use app\api\validate\CurrencyValidate;
+use think\facade\Cache;
 
 class Login
 {
@@ -130,6 +132,63 @@ class Login
 
         return (new WxLogin($code))->giveToken();
 
+
+    }
+
+    /**
+     * @return bool
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 更新pc端缓存
+     */
+    public function writePcTokenByWxToken()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['code', 'user_token'], 'require');
+        $code = request()->param('code');
+
+        $user_token = request()->param("user_token");
+        $user_desc = BaseLogin::getCurrentIdentity(['user_id', 'into_type', 'son_into_type'], $user_token);
+        $user_id = $user_desc['user_id'];
+
+        return (new PcLogin())->writeTokenByWxToken($code, $user_id);
+
+    }
+
+    /**
+     * @return bool
+     * @throws \app\lib\exception\CommonException
+     * pc端通过WxOpenid登录
+     */
+    public function pcByWxOpenidLogin()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['code'], 'require');
+        $code = request()->param('code');
+
+        return (new PcLogin())->giveTokenByWxOpenid($code);
+
+    }
+
+    /**
+     * @return string
+     * pc端获取请求code
+     */
+    public function pcGetLoginCode()
+    {
+
+        $randChar = getRandChar(32);
+        $timestamp = $_SERVER['REQUEST_TIME_FLOAT'];//得到请求开始时的时间戳
+        $tokenSalt = config('my_config.token_salt');
+        $code = md5($randChar . $timestamp . $tokenSalt);
+        $pc_login_code = 'PcLC_' . $code;
+        $data['token'] = null;
+
+        /*写入缓存*/
+        Cache::set($pc_login_code, $data, 300);//设定时间为5分钟
+
+        return $pc_login_code;
 
     }
 }

@@ -9,6 +9,7 @@
 namespace app\api\controller\v1;
 
 
+use app\api\model\GlCategory;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
 use app\api\model\GlIndexAd;
@@ -25,21 +26,7 @@ class Test extends Controller
 {
     public function test()
     {
-
-        $data = [
-            'user_name' => '11' . time(),
-            'user_password' => md5("ganglong8888"),
-            'login_ip' => request()->ip(),
-            'user_img' => "head_portrait.png",
-            'add_time' => time(),
-            'login_time' => time(),
-            'integral' => 0,
-            'is_del' => 0,
-            'login_count' => 1,
-        ];
-        Log::write($data, 'error');
-        return true;
-
+        return GlIndexAd::giveIndexAdListByIntoType('abc');
     }
 
 
