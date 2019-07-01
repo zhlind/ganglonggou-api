@@ -152,7 +152,7 @@ class SerOrder
         /*获取分期方式信息*/
         $this->byStagesInfo = GlByStages::where([
             ['bystages_id', '=', $bystages_id],
-            ['pay_id', '=', $pay_id],
+            ['pay_code', '=', $this->payTypeInfo['pay_code']],
             ['is_del', '=', 0]])
             ->find();
 

@@ -143,7 +143,11 @@ class Payment
 
             $PayClass = new AbcEPayment();
 
-        }elseif ($this->payInfo['pay_code'] === 'WxJsApiPayment') {
+        }elseif ($this->payInfo['pay_code'] === 'PcAbcPayment') {
+
+            $PayClass = new PcAbcPayment();
+
+        } elseif ($this->payInfo['pay_code'] === 'WxJsApiPayment') {
 
             $PayClass = new WxJsApiPayment();
 
@@ -180,7 +184,9 @@ class Payment
             $PayClass = new AbcPayment();
         } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
-        }elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
+        }elseif ($this->orderInfo['pay_code'] === "PcAbcPayment") {
+            $PayClass = new AbcPayment();
+        } elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
             $PayClass = new WxJsApiPayment();
         } else {
             throw new CommonException(["msg" => "该支付方式支付查询功能暂未开放"]);
@@ -217,7 +223,9 @@ class Payment
             $PayClass = new AbcPayment();
         } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
             $PayClass = new AbcPayment();
-        }elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
+        } elseif ($this->orderInfo['pay_code'] === "PcAbcPayment") {
+            $PayClass = new AbcPayment();
+        } elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
             $PayClass = new WxJsApiPayment();
         } else {
             throw new CommonException(["msg" => "该支付方式支付退款功能暂未开放"]);

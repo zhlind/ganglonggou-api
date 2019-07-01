@@ -219,7 +219,7 @@ class AbcPayment
 
         $tRequest = new \QueryOrderRequest();
 
-        if ($order_info['bystages_id'] === 200 || $order_info['bystages_id'] === 100) {
+        if ($order_info['bystages_id'] === 200 || $order_info['bystages_id'] === 100|| $order_info['bystages_id'] === 400) {
             $tRequest->request["PayTypeID"] = "ImmediatePay"; //设定交易类型
         } else {
             $tRequest->request["PayTypeID"] = "DividedPay"; //设定交易类型

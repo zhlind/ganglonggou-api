@@ -16,7 +16,7 @@ class GlOrder extends BaseModel
     after_using_coupon_price,after_using_integral_price,after_using_pay_price,order_price,
     give_integral,pay_name,bystages_val,create_time,upd_time,invalid_pay_time,logistics_name,
     logistics_tel,logistics_address,logistics_code,logistics_sn,pay_time,deliver_goods_time,
-    sign_goods_time,invalid_sign_goods_time,order_visible_note';
+    sign_goods_time,invalid_sign_goods_time,order_visible_note,son_into_type';
 
     public function getCreateTimeAttr($value, $data)
     {

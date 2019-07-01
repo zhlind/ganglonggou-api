@@ -162,11 +162,19 @@ class Address
         }
 
         //如果没有默认收货地址，就指定一条
-        GlAddress::where([['user_id', '=', $user_id]
-            , ['is_default', '=', 0]
-            , ['is_del', '=', 0]])
-            ->limit(1)
-            ->update(['is_default' => 1]);
+        $is_default_number = GlAddress::where([
+            ['user_id', '=', $user_id]
+            , ['is_default', '=', 1]
+            , ['is_del', '=', 0]
+        ])->count();
+        if ($is_default_number < 1) {
+            GlAddress::where([['user_id', '=', $user_id]
+                , ['is_default', '=', 0]
+                , ['is_del', '=', 0]])
+                ->limit(1)
+                ->update(['is_default' => 1]);
+        }
+
 
         return true;
     }

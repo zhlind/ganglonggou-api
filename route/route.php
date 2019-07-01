@@ -222,3 +222,9 @@ Route::get('api/:version/user_get_pc_login_code$', 'api/:version.common.Login/pc
 Route::get('api/:version/pc_login_by_openid$', 'api/:version.common.Login/pcByWxOpenidLogin');
 //wx端写入PcToken
 Route::post('api/:version/wx_write_pc_token$', 'api/:version.common.Login/writePcTokenByWxToken');
+//手机端注册验证
+Route::post('api/:version/mobile_register_check$', 'api/:version.common.Register/checkMobileRegister');
+//手机端注册
+Route::post('api/:version/mobile_register$', 'api/:version.common.Register/mobileRegister');
+//手机端登录
+Route::post('api/:version/mobile_user_login$', 'api/:version.common.Login/mobileLogin');

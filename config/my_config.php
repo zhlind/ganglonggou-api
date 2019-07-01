@@ -44,7 +44,8 @@ return [
     'son_into_type_name' => array(
         'abc_wx' => '农行微信端',
         'abc_app' => '农行app端',
-        'wx' => 'wx端'
+        'wx' => 'wx端',
+        'pc' => 'pc端'
     ),
     //订单状态对应名称0已取消，1未支付，2已支付未发货，3已支付已发货，4已支付已收货，5已评价，6申请售后，7售后失败，8售后成功
     'order_state_name' => array(

@@ -39,9 +39,7 @@
 <script type="text/javascript">
     //调用微信JS api 支付
     function jsApiCall() {
-        let js_api_parameters = JSON.parse( < {$order_info.js_api_parameters | raw} >
-    )
-        ;
+        let js_api_parameters = JSON.parse(<{$order_info.js_api_parameters|raw}>);
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest',
             js_api_parameters,

@@ -82,6 +82,15 @@ class User
         $data['phone'] = request()->param('phone');
         $data['email'] = request()->param('email');
 
+        if ($data['phone'] && GlUser::where([['phone', '=', $data['phone']]])->find()) {
+            throw new CommonException(['msg' => '该手机号已被注册']);
+        }
+
+        if ($data['email'] && GlUser::where([['email', '=', $data['email']]])->find()) {
+            throw new CommonException(['msg' => '该邮箱已被注册']);
+        }
+
+
         $upd_number = GlUser::where([
             ['user_id', '=', $user_id],
             ['is_del', '=', 0]
