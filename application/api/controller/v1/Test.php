@@ -15,6 +15,7 @@ use app\api\model\GlGoodsSku;
 use app\api\model\GlIndexAd;
 use app\api\model\Test1;
 use app\api\model\Test2;
+use app\api\service\OrderPayment\PcAliPayment;
 use app\api\service\SerEmail;
 use app\lib\exception\CommonException;
 use Noodlehaus\Config;
@@ -26,7 +27,18 @@ class Test extends Controller
 {
     public function test()
     {
-        return GlIndexAd::giveIndexAdListByIntoType('abc');
+        $third_party_sn_array['ali_pay_order_sn'] = '548489498489445';
+
+        $update['order_sn'] = '49498489';
+
+        if($third_party_sn_array){
+            foreach ($third_party_sn_array as $k=>$v){
+                $update[$k] = $v;
+            }
+        };
+
+        return $update;
+
     }
 
 

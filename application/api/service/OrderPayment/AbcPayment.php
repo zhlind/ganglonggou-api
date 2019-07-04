@@ -138,15 +138,15 @@ class AbcPayment
             try {
                 $PaymentClass->OrderPaySuccess($third_party_sn_array);
             } catch (Exception $exception) {
-                Log::record('农行异步进入,没有问题，服务器内部错误(订单编号：' . $order_sn . ')', 'error');
-                Log::record($exception, 'error');
+                Log::write('农行异步进入,没有问题，服务器内部错误(订单编号：' . $order_sn . ')', 'error');
+                Log::write($exception, 'error');
                 $result = $this->callBackHtml();
                 return $result;
             }
         } else {
             //支付失败
-            Log::record($request->param("MSG"), 'error');
-            Log::record('农行异步进入，执行$tResponse->isSuccess()方法不通过', 'error');
+            Log::write($request->param("MSG"), 'error');
+            Log::write('农行异步进入，执行$tResponse->isSuccess()方法不通过', 'error');
         }
 
 
@@ -193,9 +193,9 @@ class AbcPayment
             return true;
         } else {
             //3、失败
-            Log::record($tResponse->getReturnCode(), 'error');
-            Log::record($tResponse->getErrorMessage(), 'error');
-            Log::record('农行退款失败(订单号：' . $order_info['order_sn'] . ')', 'error');
+            Log::write($tResponse->getReturnCode(), 'error');
+            Log::write($tResponse->getErrorMessage(), 'error');
+            Log::write('农行退款失败(订单号：' . $order_info['order_sn'] . ')', 'error');
             return false;
         }
 

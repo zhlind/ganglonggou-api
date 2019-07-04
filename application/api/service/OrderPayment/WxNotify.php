@@ -57,15 +57,15 @@ class WxNotify extends \WxPayNotify
             try {
                 $PaymentClass->OrderPaySuccess($third_party_sn_array);
             } catch (Exception $exception) {
-                Log::record('微信异步进入,没有问题，服务器内部错误(订单编号：' . $order_sn . ')', 'error');
-                Log::record($exception, 'error');
+                Log::write('微信异步进入,没有问题，服务器内部错误(订单编号：' . $order_sn . ')', 'error');
+                Log::write($exception, 'error');
                 $result = $this->callBackHtml();
                 return $result;
             }
         } else {
             //支付失败
-            Log::record($data, 'error');
-            Log::record('微信异步进入，result_code不等于SUCCESS', 'error');
+            Log::write($data, 'error');
+            Log::write('微信异步进入，result_code不等于SUCCESS', 'error');
         }
         return true;
     }

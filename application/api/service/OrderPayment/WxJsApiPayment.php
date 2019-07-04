@@ -48,6 +48,7 @@ class WxJsApiPayment
      * @param $back_url
      * @return \think\response\View
      * @throws CommonException
+     * @throws \WxPayException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -105,6 +106,7 @@ class WxJsApiPayment
      * @param $order_info
      * @return mixed
      * @throws CommonException
+     * @throws \WxPayException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -157,6 +159,7 @@ class WxJsApiPayment
     /**
      * @param $order_info
      * @return bool
+     * @throws \WxPayException
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      * 支付退款
@@ -189,7 +192,6 @@ class WxJsApiPayment
 
         if ($data['result_code'] === "SUCCESS" && $data['return_code'] === "SUCCESS" && $data['return_msg'] === "OK") {
             //改变订单状态
-
             $PaymentClass = new Payment();
             $PaymentClass->orderSn = $order_info['order_sn'];
             $PaymentClass->OrderRefundSuccess();
@@ -198,8 +200,8 @@ class WxJsApiPayment
 
         } else {
             //3、失败
-            Log::record($data, 'error');
-            Log::record('微信JsPai退款失败(订单号：' . $order_info['order_sn'] . ')', 'error');
+            Log::write($data, 'error');
+            Log::write('微信JsApi退款失败(订单号：' . $order_info['order_sn'] . ')', 'error');
             return false;
         }
     }
@@ -208,6 +210,7 @@ class WxJsApiPayment
      * @param $UnifiedOrderResult
      * @return false|string
      * @throws CommonException
+     * @throws \WxPayException
      * 获取jsapi支付的参数
      */
     private function getJsApiParameters($UnifiedOrderResult)

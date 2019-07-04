@@ -10,6 +10,7 @@ namespace app\api\controller\v1\notify;
 
 
 use app\api\service\OrderPayment\AbcPayment;
+use app\api\service\OrderPayment\PcAliPayment;
 use app\api\service\OrderPayment\WxJsApiPayment;
 use think\facade\Log;
 
@@ -34,6 +35,19 @@ class PayNotify
     {
 
         $result = (new WxJsApiPayment())->notifyProcess();
+
+        return $result;
+    }
+
+
+    /**
+     * @throws \Exception
+     * 支付宝回调
+     */
+    public function aliPayNotify()
+    {
+
+        $result = (new PcAliPayment())->notifyProcess();
 
         return $result;
     }

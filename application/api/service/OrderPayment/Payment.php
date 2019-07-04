@@ -45,6 +45,7 @@ class Payment
     /**
      * @return \think\response\View
      * @throws CommonException
+     * @throws \WxPayException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -135,26 +136,25 @@ class Payment
         }
 
         /*发起支付*/
-        if ($this->payInfo['pay_code'] === 'AbcPayment') {
-
-            $PayClass = new AbcPayment();
-
-        } elseif ($this->payInfo['pay_code'] === 'AbcEPayment') {
-
-            $PayClass = new AbcEPayment();
-
-        }elseif ($this->payInfo['pay_code'] === 'PcAbcPayment') {
-
-            $PayClass = new PcAbcPayment();
-
-        } elseif ($this->payInfo['pay_code'] === 'WxJsApiPayment') {
-
-            $PayClass = new WxJsApiPayment();
-
-        } else {
-            throw new CommonException(['无效支付方式,该支付方式或已关闭']);
+        switch ($this->payInfo['pay_code']) {
+            case 'AbcPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'AbcEPayment':
+                $PayClass = new AbcEPayment();
+                break;
+            case 'PcAbcPayment':
+                $PayClass = new PcAbcPayment();
+                break;
+            case 'WxJsApiPayment':
+                $PayClass = new WxJsApiPayment();
+                break;
+            case 'PcAliPayment':
+                $PayClass = new PcAliPayment();
+                break;
+            default:
+                throw new CommonException(['无效支付方式,该支付方式或已关闭']);
         }
-
         return $PayClass->startPayment($this->orderInfo, $this->midOrderInfo, $this->successUrl, $this->backUrl);
 
     }
@@ -163,6 +163,7 @@ class Payment
     /**
      * @return mixed
      * @throws CommonException
+     * @throws \WxPayException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -178,20 +179,27 @@ class Payment
         if (!$this->orderInfo) {
             throw new CommonException(['msg' => '无此订单']);
         }
-
         //发起查询
-        if ($this->orderInfo['pay_code'] === "AbcPayment") {
-            $PayClass = new AbcPayment();
-        } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
-            $PayClass = new AbcPayment();
-        }elseif ($this->orderInfo['pay_code'] === "PcAbcPayment") {
-            $PayClass = new AbcPayment();
-        } elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
-            $PayClass = new WxJsApiPayment();
-        } else {
-            throw new CommonException(["msg" => "该支付方式支付查询功能暂未开放"]);
-        }
+        switch ($this->orderInfo['pay_code']) {
+            case 'AbcPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'AbcEPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'PcAbcPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'WxJsApiPayment':
+                $PayClass = new WxJsApiPayment();
+                break;
+            case 'PcAliPayment':
+                $PayClass = new PcAliPayment();
+                break;
+            default:
+                throw new CommonException(["msg" => "该支付方式支付查询功能暂未开放"]);
 
+        }
         return $PayClass->startQuery($this->orderInfo);
 
     }
@@ -199,6 +207,7 @@ class Payment
     /**
      * @return bool
      * @throws CommonException
+     * @throws \WxPayException
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -219,16 +228,24 @@ class Payment
         }
 
         //发起退款
-        if ($this->orderInfo['pay_code'] === "AbcPayment") {
-            $PayClass = new AbcPayment();
-        } elseif ($this->orderInfo['pay_code'] === "AbcEPayment") {
-            $PayClass = new AbcPayment();
-        } elseif ($this->orderInfo['pay_code'] === "PcAbcPayment") {
-            $PayClass = new AbcPayment();
-        } elseif ($this->orderInfo['pay_code'] === "WxJsApiPayment") {
-            $PayClass = new WxJsApiPayment();
-        } else {
-            throw new CommonException(["msg" => "该支付方式支付退款功能暂未开放"]);
+        switch ($this->orderInfo['pay_code']) {
+            case 'AbcPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'AbcEPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'PcAbcPayment':
+                $PayClass = new AbcPayment();
+                break;
+            case 'WxJsApiPayment':
+                $PayClass = new WxJsApiPayment();
+                break;
+            case 'PcAliPayment':
+                $PayClass = new PcAliPayment();
+                break;
+            default:
+                throw new CommonException(["msg" => "该支付方式支付退款功能暂未开放"]);
         }
 
         return $PayClass->startRefund($this->orderInfo);
@@ -323,20 +340,11 @@ class Payment
                     'order_state' => 2
                 ];
                 //获取第三方订单号
-                switch ($this->orderInfo['pay_code']) {
-                    case 'AbcPayment':
-                        $update['abc_order_sn'] = $third_party_sn_array['abc_order_sn'];
-                        break;
-                    case 'AbcEPayment':
-                        $update['abc_order_sn'] = $third_party_sn_array['abc_order_sn'];
-                        break;
-                    case 'WxJsApiPayment':
-                        $update['wx_js_api_order_sn'] = $third_party_sn_array['wx_js_api_order_sn'];
-                        break;
-                    default:
-                        throw new CommonException(['msg' => '支付类型错误，无法改变支付状态']);
+                if ($third_party_sn_array) {
+                    foreach ($third_party_sn_array as $k => $v) {
+                        $update[$k] = $v;
+                    }
                 }
-
                 GlOrder::where([
                     ['order_sn', '=', $this->orderSn]
                 ])
@@ -363,7 +371,7 @@ class Payment
             (new SerEmail())->sendEmail($head, $email_body, $address_array);
 
         } else {
-            Log::record("支付回调，检测订单状态时不通过,OrderSn:" . $this->orderSn, 'error');
+            Log::write("支付回调，检测订单状态时不通过,OrderSn:" . $this->orderSn, 'error');
             throw new CommonException(['msg' => '订单状态不合法']);
         }
     }

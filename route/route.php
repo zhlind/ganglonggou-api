@@ -28,6 +28,8 @@ Route::any('api/:version/notify/wx_js_api_notify$', 'api/:version.notify.PayNoti
 Route::any('api/:version/notify/abc_notify$', 'api/:version.notify.PayNotify/abcPayNotify');
 //中行支付回调
 Route::any('api/:version/notify/boc_notify$', 'api/:version.notify.PayNotify/bocPayNotify');
+//支付宝支付回调
+Route::any('api/:version/notify/ali_pay_notify$', 'api/:version.notify.PayNotify/aliPayNotify');
 
 
 /*百度ueditor*/
