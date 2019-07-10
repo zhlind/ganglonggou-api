@@ -11,6 +11,7 @@ namespace app\api\controller\v1\cms;
 
 use app\api\model\GlGoods;
 use app\api\model\GlIndexAd;
+use app\api\model\GlIntoCount;
 use app\api\service\Upload\Upload;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
@@ -219,7 +220,7 @@ class CmsIndexAd
     public function easeUpdIndexAd()
     {
         //验证必要
-        (new CurrencyValidate())->myGoCheck(['goods_price', 'goods_name', 'sort_order', 'id','url'], 'require');
+        (new CurrencyValidate())->myGoCheck(['goods_price', 'goods_name', 'sort_order', 'id', 'url'], 'require');
         (new CurrencyValidate())->myGoCheck(['sort_order', 'id'], 'positiveInt');
         UserAuthority::checkAuthority(8);
 
@@ -233,5 +234,31 @@ class CmsIndexAd
         GlIndexAd::where($where)->update($data);
 
         return true;
+    }
+
+
+    public function giveIntoCountList()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['into_type_array', 'number'], 'require');
+        (new CurrencyValidate())->myGoCheck(['number'], 'positiveInt');
+        UserAuthority::checkAuthority(8);
+
+        $into_type_array = request()->param('into_type_array/a');
+        $number = request()->param('number');
+        $data_array = [];
+
+        foreach ($into_type_array as $k => $v) {
+            $data_array[$k]['name'] = $v;
+            $data_array[$k]['data'] = GlIntoCount::where([
+                ['into_type', '=', $v]
+            ])
+                ->order('into_date desc')
+                ->limit($number)
+                ->select();
+
+        }
+
+        return $data_array;
     }
 }

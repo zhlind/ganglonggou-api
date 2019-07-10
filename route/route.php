@@ -85,6 +85,7 @@ Route::post('api/:version/cms/cms_del_index_ad$', 'api/:version.cms.CmsIndexAd/d
 Route::post('api/:version/cms/cms_upd_ad_img$', 'api/:version.cms.CmsIndexAd/updImg');
 Route::rule('api/:version/cms/cms_upd_ad_img$', 'api/:version.Option/returnTrue', 'OPTIONS');
 Route::post('api/:version/cms/cms_ease_upd_index_ad$', 'api/:version.cms.CmsIndexAd/easeUpdIndexAd');
+Route::get('api/:version/cms/cms_get_into_count$', 'api/:version.cms.CmsIndexAd/giveIntoCountList');
 //预约订单
 Route::get('api/:version/cms/cms_get_make_order_list$', 'api/:version.cms.CmsMakeOrder/giveMakeOderList');
 Route::post('api/:version/cms/cms_handle_make_order$', 'api/:version.cms.CmsMakeOrder/handleMakeOrder');

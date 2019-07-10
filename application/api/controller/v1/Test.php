@@ -13,6 +13,7 @@ use app\api\model\GlCategory;
 use app\api\model\GlGoods;
 use app\api\model\GlGoodsSku;
 use app\api\model\GlIndexAd;
+use app\api\model\GlIntoCount;
 use app\api\model\Test1;
 use app\api\model\Test2;
 use app\api\service\OrderPayment\PcAliPayment;
@@ -27,9 +28,19 @@ class Test extends Controller
 {
     public function test()
     {
-//        /*接受参数*/
-//        $data1 = request()->param('参数1');
-//        $data1 = request()->param('参数2');
+        /* $data = request()->param('data');
+         $data = json_decode($data, true);
+         foreach ($data as $k => $v) {
+             GlIndexAd::create($v);
+         }
+         return true;*/
+
+        $data = GlIntoCount::where([
+            ['into_type', '=', '3c_mobile']
+        ])
+            ->sum('into_count');
+
+        return $data;
 
     }
 
