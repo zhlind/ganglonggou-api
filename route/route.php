@@ -12,7 +12,7 @@
 use think\facade\Route;
 
 /*测试*/
-Route::get('api/:version/test$', 'api/:version.Test/test');
+Route::any('api/:version/test$', 'api/:version.Test/test');
 
 /*发送邮件*/
 Route::post('api/:version/send_email$', 'api/:version.Email/sandEmail');
@@ -82,6 +82,9 @@ Route::get('api/:version/cms/cms_get_all_ad$', 'api/:version.cms.CmsIndexAd/give
 Route::post('api/:version/cms/cms_add_index_ad$', 'api/:version.cms.CmsIndexAd/addIndexAd');
 Route::post('api/:version/cms/cms_upd_index_ad$', 'api/:version.cms.CmsIndexAd/updIndexAd');
 Route::post('api/:version/cms/cms_del_index_ad$', 'api/:version.cms.CmsIndexAd/delIndexAd');
+Route::post('api/:version/cms/cms_upd_ad_img$', 'api/:version.cms.CmsIndexAd/updImg');
+Route::rule('api/:version/cms/cms_upd_ad_img$', 'api/:version.Option/returnTrue', 'OPTIONS');
+Route::post('api/:version/cms/cms_ease_upd_index_ad$', 'api/:version.cms.CmsIndexAd/easeUpdIndexAd');
 //预约订单
 Route::get('api/:version/cms/cms_get_make_order_list$', 'api/:version.cms.CmsMakeOrder/giveMakeOderList');
 Route::post('api/:version/cms/cms_handle_make_order$', 'api/:version.cms.CmsMakeOrder/handleMakeOrder');
@@ -151,6 +154,8 @@ Route::post('api/:version/goods_make/add_make_order$', 'api/:version.goods_make.
 Route::get('api/:version/get_WxJsSdk$', 'api/:version.WxShare/giveWxShareInfo');
 //获取首页信息
 Route::get('api/:version/get_index_info$', 'api/:version.common.Index/giveIndexInfo');
+//获取首页信息
+Route::post('api/:version/ad_item_count$', 'api/:version.common.Index/countIndexAdItem');
 //获取商品列表
 Route::get('api/:version/user_get_goods_list$', 'api/:version.common.Goods/giveGoodsList');
 //获取商品信息

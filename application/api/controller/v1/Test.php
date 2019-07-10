@@ -27,17 +27,9 @@ class Test extends Controller
 {
     public function test()
     {
-        $third_party_sn_array['ali_pay_order_sn'] = '548489498489445';
-
-        $update['order_sn'] = '49498489';
-
-        if($third_party_sn_array){
-            foreach ($third_party_sn_array as $k=>$v){
-                $update[$k] = $v;
-            }
-        };
-
-        return $update;
+//        /*接受参数*/
+//        $data1 = request()->param('参数1');
+//        $data1 = request()->param('参数2');
 
     }
 

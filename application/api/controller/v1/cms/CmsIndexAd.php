@@ -11,6 +11,7 @@ namespace app\api\controller\v1\cms;
 
 use app\api\model\GlGoods;
 use app\api\model\GlIndexAd;
+use app\api\service\Upload\Upload;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
 use think\facade\Cache;
@@ -77,6 +78,7 @@ class CmsIndexAd
         $data['goods_price'] = request()->param('goods_price');
         $data['origin_goods_price'] = request()->param('origin_goods_price');
         $data['url'] = request()->param('url');
+        $data['click_count'] = 0;
 
         //第二次验证
         if ($data['ad_type'] === '商品ID') {
@@ -182,20 +184,54 @@ class CmsIndexAd
     }
 
     /**
-     * @param $file
      * @return mixed
-     * 去除图片中的url
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 修改广告图片
      */
-    private function removeImgUrl($file)
+    public function updImg()
     {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['id'], 'require');
+        (new CurrencyValidate())->myGoCheck(['id'], 'positiveInt');
+        $id = request()->param('id');
 
-        if (strpos($file, config('my_config.img_url')) >= 0) {
+        $img_info = (new Upload())->ImgUpload();
 
-            return str_replace(config('my_config.img_url'), '', $file);
+        GlIndexAd::where([
+            ['id', '=', $id]
+        ])
+            ->update([
+                'ad_img' => removeImgUrl($img_info['goods_img'])
+            ]);
 
-        } else {
-            return $file;
-        }
+        return $img_info;
+    }
 
+    /**
+     * @return bool
+     * @throws \app\lib\exception\CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 简单修改
+     */
+    public function easeUpdIndexAd()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['goods_price', 'goods_name', 'sort_order', 'id','url'], 'require');
+        (new CurrencyValidate())->myGoCheck(['sort_order', 'id'], 'positiveInt');
+        UserAuthority::checkAuthority(8);
+
+        $where['id'] = request()->param('id');
+        $data['sort_order'] = request()->param('sort_order');
+        $data['goods_name'] = request()->param('goods_name');
+        $data['goods_price'] = request()->param('goods_price');
+        $data['url'] = request()->param('url');
+
+        //更新
+        GlIndexAd::where($where)->update($data);
+
+        return true;
     }
 }

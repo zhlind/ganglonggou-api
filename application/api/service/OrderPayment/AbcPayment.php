@@ -219,7 +219,7 @@ class AbcPayment
 
         $tRequest = new \QueryOrderRequest();
 
-        if ($order_info['bystages_id'] === 200 || $order_info['bystages_id'] === 100|| $order_info['bystages_id'] === 400) {
+        if ($order_info['bystages_id'] === 200 || $order_info['bystages_id'] === 100 || $order_info['bystages_id'] === 400) {
             $tRequest->request["PayTypeID"] = "ImmediatePay"; //设定交易类型
         } else {
             $tRequest->request["PayTypeID"] = "DividedPay"; //设定交易类型
@@ -240,7 +240,7 @@ class AbcPayment
                 $detail = new \Json($orderDetail);
                 $Status = $detail->GetValue("Status");
                 if ($Status === "04") {
-                    if($order_info['order_state'] === 1){
+                    if ($order_info['order_state'] === 1) {
                         $PaymentClass = new Payment();
                         $PaymentClass->orderSn = $order_info['order_sn'];
                         $third_party_sn_array['abc_order_sn'] = $detail->getValue("VoucherNo");
@@ -254,8 +254,8 @@ class AbcPayment
                     $result["success"] = false;
                     $result["status"] = $Status;
                 }
-            }else{
-                $result["msg"] = '未获取到农行返回的订单信息'.$tResponse->getErrorMessage();
+            } else {
+                $result["msg"] = '未获取到农行返回的订单信息' . $tResponse->getErrorMessage();
                 $result["success"] = false;
                 $result["status"] = '';
             }
