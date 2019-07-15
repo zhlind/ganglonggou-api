@@ -15,6 +15,7 @@ use app\api\model\GlIntoCount;
 use app\api\service\Upload\Upload;
 use app\api\service\UserAuthority;
 use app\api\validate\CurrencyValidate;
+use app\lib\exception\CommonException;
 use think\facade\Cache;
 
 class CmsIndexAd
@@ -80,6 +81,7 @@ class CmsIndexAd
         $data['origin_goods_price'] = request()->param('origin_goods_price');
         $data['url'] = request()->param('url');
         $data['click_count'] = 0;
+        $data['is_on_sale'] = 1;
 
         //第二次验证
         if ($data['ad_type'] === '商品ID') {
@@ -260,5 +262,59 @@ class CmsIndexAd
         }
 
         return $data_array;
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 下架商品
+     */
+    public function endOfSaleIndexAd()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+        $data['id'] = request()->param('id');
+
+        //根据商品id删除商品
+        $upd_number = GlIndexAd::where($data)->update(['is_on_sale' => 0]);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '下架失败']);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @return bool
+     * @throws CommonException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * 上架商品
+     */
+    public function allowSaleIndexAd()
+    {
+        //验证必要
+        (new CurrencyValidate())->myGoCheck(['id'], 'require');
+        //验证正整数
+        (new CurrencyValidate())->myGoCheck(['id'], 'positiveInt');
+
+        UserAuthority::checkAuthority(8);
+        $data['id'] = request()->param('id');
+
+        //根据商品id删除商品
+        $upd_number = GlIndexAd::where($data)->update(['is_on_sale' => 1]);
+        if ($upd_number < 1) {
+            throw new CommonException(['msg' => '上架失败']);
+        }
+
+        return true;
+
     }
 }

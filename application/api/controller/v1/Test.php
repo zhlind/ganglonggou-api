@@ -19,6 +19,8 @@ use app\api\model\Test2;
 use app\api\service\OrderPayment\PcAliPayment;
 use app\api\service\SerEmail;
 use app\lib\exception\CommonException;
+use EasyWeChat\Factory;
+use Naixiaoxin\ThinkWechat\Facade;
 use Noodlehaus\Config;
 use think\Controller;
 use think\Db;
@@ -28,19 +30,36 @@ class Test extends Controller
 {
     public function test()
     {
-        /* $data = request()->param('data');
-         $data = json_decode($data, true);
-         foreach ($data as $k => $v) {
-             GlIndexAd::create($v);
-         }
-         return true;*/
 
-        $data = GlIntoCount::where([
-            ['into_type', '=', '3c_mobile']
-        ])
-            ->sum('into_count');
+//        $config = [
+//            'app_id' => 'wxcdc792b2207365e6',
+//            'mch_id' => '1408495802',
+//            'key' => 'ganglongkeji123ganglongkeji123ga',
+//            'cert_path' => 'C:\Users\administrator_liwy\Desktop\web\API\ganglonggou-api\cert\wxJsApi\apiclient_cert.pem',
+//            'key_path' => 'C:\Users\administrator_liwy\Desktop\web\API\ganglonggou-api\cert\wxJsApi\apiclient_key.pem',
+//            // ...
+//        ];
+//
+//        $payment = Factory::payment($config);
+//
+//        $redpack = $payment->redpack;
+//
+//        $redpackData = [
+//            'mch_billno' => 'test123456',
+//            'send_name' => '给山不转水转的红包',
+//            're_openid' => 'oNSO9wHBr-KbfKt0sNybs2wByWHY',
+//            'total_num' => 1,  //固定为1，可不传
+//            'total_amount' => 100,  //单位为分，不小于100
+//            'wishing' => '给山不转水转的红包',
+//            'client_ip' => '61.177.154.210',  //可不传，不传则由 SDK 取当前客户端 IP
+//            'act_name' => '测试活动',
+//            'remark' => '测试备注',
+//            // ...
+//        ];
+//
+//        $result = $redpack->sendNormal($redpackData);
+//        return $result;
 
-        return $data;
 
     }
 
@@ -71,6 +90,132 @@ class Test extends Controller
 
         return $email_body;
 
+    }
+
+    /**
+     * @return string
+     * 工行测试
+     */
+    public function ghTest()
+    {
+        $tranData = array(
+            'interfaceName' => 'ICBC_WAPB_B2C',
+            'interfaceVersion' => '1.0.0.6',
+            'orderInfo' => array(
+                'orderDate' => date('YmdHis', time()),
+                'orderid' => 'orderid',
+                'amount' => '1000',
+                'installmentTimes' => '9000',
+                'curType' => '001',
+                'merID' => '1103EE20175012',//商户代码
+                'merAcct' => '1103028809200994418',//商户账号
+            ),
+            'custom' => array(
+                'verifyJoinFlag' => 0,
+                'Language' => '',
+            ),
+            'message' => array(
+                'goodsID' => '',
+                'goodsName' => '商品名称',
+                'goodsNum' => 1,
+                'carriageAmt' => '',
+                'merHint' => '',
+                'remark1' => '',
+                'remark2' => '',
+                'merURL' => "回调地址",
+                'merVAR' => 'test',
+                'notifyType' => 'HS',
+                'resultType' => '0',
+            ),
+        );
+        $xml = self::coverParamsToXml($tranData);
+        $htmlParams = array(
+            'tranData' => 'tranData',
+            'merSignMsg' => 'merSignMsg',
+            'merCert' => 'merCert',
+            'clientType' => 'clientType'
+        );
+        $xml = self::createHtml($htmlParams);
+        return $xml;
+    }
+
+    /**
+     * @param $params
+     * @return string
+     * 工行转xml
+     */
+    public static function coverParamsToXml($params)
+    {
+        $sign_str = '<?xml version="1.0" encoding="GBK" standalone="no"?>';
+        $sign_str .= '<B2CReq>';
+        foreach ($params as $key => $val) {
+            if (!is_array($val)) {
+                $sign_str .= sprintf('<%s>%s</%s>', $key, $val, $key);
+            } else {
+                $sign_str .= '<' . $key . '>';
+                foreach ($val as $key2 => $val2) {
+                    if (!is_array($val2)) {
+                        $sign_str .= sprintf('<%s>%s</%s>', $key2, $val2, $key2);
+                    } else {
+                        $sign_str .= '<' . $key2 . '>';
+                        if ($key2 == 'subOrderInfoList') {
+                            foreach ($val2 as $key3 => $val3) {
+                                if (is_array($val3) && is_numeric($key3)) {
+                                    $sign_str .= '<' . 'subOrderInfo' . '>';
+                                    foreach ($val3 as $key4 => $val4) {
+                                        $sign_str .= sprintf('<%s>%s</%s>', $key4, $val4, $key4);
+                                    }
+                                    $sign_str .= '</' . 'subOrderInfo' . '>';
+                                }
+                            }
+                        }
+                        $sign_str .= '</' . $key2 . '>';
+                    }
+                }
+
+                $sign_str .= '</' . $key . '>';
+            }
+        }
+        $sign_str .= '</B2CReq>';
+        return strval($sign_str);
+    }
+
+    /**
+     * @param $params
+     * @return string
+     * 工行转HTML
+     */
+    public static function createHtml($params)
+    {
+        $init = array(
+            'interfaceName' => 'ICBC_WAPB_B2C',
+            'interfaceVersion' => '1.0.0.6'
+        );
+        $params = array_merge($init, $params);
+        $action = 'https://mywap2.icbc.com.cn/ICBCWAPBank/servlet/ICBCWAPEBizServlet';
+
+        $encodeType = isset ($params ['encoding']) ? $params ['encoding'] : 'UTF-8';
+        $var = '';
+        $html = <<<eot
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset={$encodeType}" />
+</head>
+<body  onload="javascript:document.pay_form.submit();">
+    <form id="pay_form" name="pay_form" action="{$action}" method="post">
+eot;
+        foreach ($params as $key => $value) {
+            $html .= "    <input type=\"hidden\" name=\"{$key}\" id=\"{$key}\" value=\"{$value}\" />\n";
+            $var .= $key . ':' . $value . "\n";
+        }
+        $html .= <<<eot
+    <input type="submit" value="稍等，支付跳转跳..." style="display: none;" >
+    </form>
+</body>
+</html>
+eot;
+        file_put_contents('test.txt', $html);
+        return $html;
     }
 
     protected function iniTest()

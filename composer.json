@@ -7,7 +7,8 @@
         "topthink/framework": "5.1.*",
         "yuan1994/tp-mailer": "dev-master",
         "topthink/think-image": "dev-master",
-        "hassankhan/config": "dev-master"
+        "hassankhan/config": "dev-master",
+        "naixiaoxin/think-wechat": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -508,7 +508,7 @@ class CmsGoods
      * @throws CommonException
      * @throws \think\Exception
      * @throws \think\exception\PDOException
-     * 下架商品
+     * 上架商品
      */
     public function allowSaleGoods()
     {
